@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
+  <!-- Red Orbital Ring encircling T -->
+  <ellipse cx="148" cy="20" rx="25" ry="16" stroke="#EF4444" stroke-width="3" transform="rotate(-25 148 20)" fill="none"/>
+  
+  <!-- India text in red ring -->
+  <text x="146" y="15" font-family="'Inter', Arial, sans-serif" font-size="12" font-weight="900" font-style="italic" fill="#FFFFFF" text-anchor="middle">India</text>
+  
+  <!-- Main ERNET Text in Cyan Blue -->
+  <text x="5" y="35" font-family="'Lexend', 'Arial Black', sans-serif" font-size="33" font-weight="900" font-style="italic" fill="#38BDF8" letter-spacing="-0.5">ERNET</text>
+  
+  <!-- Tagline underneath: Education & Research Network -->
+  <text x="5" y="53" font-family="'Inter', Arial, sans-serif" font-size="11.5" font-weight="700" fill="#E2E8F0" letter-spacing="-0.1">Education &amp; Research Network</text>
+</svg>
