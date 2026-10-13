@@ -188,48 +188,12 @@ table.data-table td {
     <div><p class="eyebrow">ERNET India / Digital classrooms</p><h1 id="workspaceTitle">Programme overview</h1><p id="workspaceSubtitle">A central view of device activity, learning resource usage, and school performance.</p></div>
     <button class="heading-action" type="button" onclick="switchTab('view-reports')"><i class="bi bi-download me-2"></i>Open reports</button>
   </header>
-  <!-- Filter bar -->
-  <div class="card-surface filter-panel p-2 p-md-3 mt-2">
-    <form id="filterForm" class="filter-row">
-      <div class="filter-item w-select">
-        <label class="filter-label" for="stateSelect">State</label>
-        <select class="form-select" id="stateSelect">
-          <option value="ALL">All available states (Delhi demo)</option>
-          <option value="Delhi" selected>Delhi (NCT)</option>
-          <option value="Haryana" disabled>Haryana — data not connected</option>
-          <option value="Punjab" disabled>Punjab — data not connected</option>
-          <option value="Uttar Pradesh" disabled>Uttar Pradesh — data not connected</option>
-        </select>
-      </div>
-      <div class="filter-item w-date">
-        <label class="filter-label" for="fromDate">From Date</label>
-        <input type="date" class="form-control" id="fromDate">
-      </div>
-      <div class="filter-item w-date">
-        <label class="filter-label" for="toDate">To Date</label>
-        <input type="date" class="form-control" id="toDate">
-      </div>
-      <div class="filter-item" style="width: 150px;">
-        <label class="filter-label" for="schoolIdFilter">Filter - School ID</label>
-        <input type="text" class="form-control" id="schoolIdFilter" placeholder="e.g. 1000000">
-      </div>
-      <div class="filter-item w-btn">
-        <button type="submit" class="btn btn-apply">Apply</button>
-        <button type="button" id="resetBtn" class="btn btn-reset">Reset</button>
-      </div>
-      <!-- Hidden selects to maintain drill-down logic without visible dropdowns -->
-      <select id="districtSelect" style="display:none;"></select>
-      <select id="zoneSelect" style="display:none;"><option value="ALL">All Zones</option></select>
-      <select id="schoolSelect" style="display:none;"></select>
-    </form>
-    <div class="period-controls" aria-label="Usage date shortcuts"><span>View usage</span>
-      <button type="button" class="period-btn" data-period="1" aria-pressed="true" onclick="setUsagePeriod(1)">Daily</button>
-      <button type="button" class="period-btn" data-period="7" aria-pressed="false" onclick="setUsagePeriod(7)">Weekly</button>
-      <button type="button" class="period-btn" data-period="30" aria-pressed="false" onclick="setUsagePeriod(30)">Monthly</button>
-      <small class="filter-note">Delhi sample dataset · Programme target: 750 schools across 13 states</small>
-    </div>
-  </div>
+  <div id="compactFilterBar" class="compact-filter-bar" aria-label="Dashboard filters"><button id="filterToggleBtn" type="button" class="heading-action compact-filter-toggle" aria-controls="advancedFilterDialog" aria-expanded="false" onclick="toggleAdvancedFilters()"><i class="bi bi-sliders me-2"></i>Filters <span id="filterAppliedCount" class="filter-count" hidden></span></button><div id="activeFilterChips" class="active-filter-chips"></div><span id="compactDateRange" class="compact-date-range"></span><div class="compact-period-buttons" aria-label="Date shortcuts"><button type="button" class="period-btn" data-period="1" aria-pressed="true" onclick="setUsagePeriod(1)">Daily</button><button type="button" class="period-btn" data-period="7" aria-pressed="false" onclick="setUsagePeriod(7)">Weekly</button><button type="button" class="period-btn" data-period="30" aria-pressed="false" onclick="setUsagePeriod(30)">Monthly</button></div><button id="resetBtn" type="button" class="compact-clear-btn" hidden>Clear all</button></div>
+  <dialog id="advancedFilterDialog" class="filter-popup" aria-labelledby="advancedFilterTitle"><form id="filterForm"><header class="filter-popup-header"><div><h2 id="advancedFilterTitle">Filter dashboard</h2><p>Select one or more states, districts, blocks, and schools.</p></div><button type="button" class="compact-close-btn" aria-label="Cancel and close filters" onclick="closeMultiFilterPopup()"><i class="bi bi-x-lg"></i></button></header><div class="filter-popup-body"><div class="multi-filter-grid"><section class="multi-filter-column" aria-label="Select states"><div class="multi-filter-heading"><h3>States</h3><span id="multiCount-state"></span></div><input id="multiSearch-state" class="form-control" type="search" placeholder="Search states" aria-label="Search states" oninput="renderMultiList('state')"><div class="multi-select-actions"><label><input id="multiAll-state" type="checkbox" onchange="selectAllMulti('state',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('state',false)">Clear</button></div><div id="multiOptions-state" class="multi-filter-options"></div></section><section class="multi-filter-column" aria-label="Select districts"><div class="multi-filter-heading"><h3>Districts</h3><span id="multiCount-district"></span></div><input id="multiSearch-district" class="form-control" type="search" placeholder="Search districts" aria-label="Search districts" oninput="renderMultiList('district')"><div class="multi-select-actions"><label><input id="multiAll-district" type="checkbox" onchange="selectAllMulti('district',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('district',false)">Clear</button></div><div id="multiOptions-district" class="multi-filter-options"></div></section><section class="multi-filter-column" aria-label="Select blocks"><div class="multi-filter-heading"><h3>Blocks</h3><span id="multiCount-block"></span></div><input id="multiSearch-block" class="form-control" type="search" placeholder="Search blocks" aria-label="Search blocks" oninput="renderMultiList('block')"><div class="multi-select-actions"><label><input id="multiAll-block" type="checkbox" onchange="selectAllMulti('block',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('block',false)">Clear</button></div><div id="multiOptions-block" class="multi-filter-options"></div></section><section class="multi-filter-column" aria-label="Select schools"><div class="multi-filter-heading"><h3>Schools</h3><span id="multiCount-school"></span></div><input id="multiSearch-school" class="form-control" type="search" placeholder="Search schools" aria-label="Search schools" oninput="renderMultiList('school')"><div class="multi-select-actions"><label><input id="multiAll-school" type="checkbox" onchange="selectAllMulti('school',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('school',false)">Clear</button></div><div id="multiOptions-school" class="multi-filter-options"></div></section></div><div class="multi-date-row"><div><label class="filter-label" for="filterFromDate">From date</label><input class="form-control" id="filterFromDate" type="date" required></div><div><label class="filter-label" for="filterToDate">To date</label><input class="form-control" id="filterToDate" type="date" required></div><p id="filterMatchCount"></p></div><p id="filterValidationMessage" class="filter-validation" role="alert" hidden></p></div><footer class="filter-popup-footer"><span>Changes apply when you select Apply filters.</span><div class="d-flex gap-2"><button class="heading-action" type="button" onclick="closeMultiFilterPopup()">Cancel</button><button class="btn btn-apply" type="submit">Apply filters</button></div></footer></form></dialog>
+  <div hidden><form id="legacyFilterState"><select id="stateSelect"><option value="ALL">All states</option></select><details id="nationalStateDropdown"><summary id="stateFilterSummary"></summary><input id="stateAllCheckbox" type="checkbox"><div id="stateOptions"></div></details><select id="districtSelect"><option value="ALL">All districts</option></select><select id="zoneSelect"><option value="ALL">All blocks</option></select><select id="schoolSelect"><option value="ALL">All schools</option></select><input type="date" id="fromDate"><input type="date" id="toDate"><input type="hidden" id="schoolIdFilter"></form></div>
 
+  <p id="adminScopeLabel" class="admin-scope-label"></p>
+  <p id="nationalDataNote" class="section-sub mb-3"></p>
   <!-- Tabs -->
   <ul class="nav nav-tabs" id="mainTabs" aria-label="Main navigation">
 <li class="nav-item"><a class="nav-link active" href="#view-overview" data-target="view-overview"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Overview</a></li>
@@ -244,10 +208,11 @@ table.data-table td {
 
   <!-- VIEW: OVERVIEW -->
   <div id="view-overview" class="view-section active">
-    <div class="summary-strip" aria-label="Selected scope summary">
-      <div class="summary-stat"><div class="stat-label">Schools in this view<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>Available demonstration schools</small></div>
-      <div class="summary-stat"><div class="stat-label">Teaching devices<i class="bi bi-display"></i></div><strong id="summaryDevices">—</strong><small>Interactive panels in selected scope</small></div>
-      <div class="summary-stat"><div class="stat-label">Device activity<i class="bi bi-activity"></i></div><strong id="summaryActivity">—</strong><small>Sample active panel ratio</small></div>
+    <div class="summary-strip national-summary-strip" aria-label="Selected scope summary">
+      <button type="button" class="summary-stat summary-action-card" onclick="nationalShowStates()"><div class="stat-label">States in this view<i class="bi bi-map"></i></div><strong id="summaryStates">—</strong><small>View state-wise school metrics</small></button>
+      <div class="summary-stat"><div class="stat-label">Schools in this view<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>Programme schools in selected scope</small></div>
+      <div class="summary-stat"><div class="stat-label">Teaching devices<i class="bi bi-display"></i></div><strong id="summaryDevices">—</strong><small>Dummy devices for available school records</small></div>
+      <button type="button" class="summary-stat summary-action-card" onclick="switchTab('view-device')"><div class="stat-label">Device activity<i class="bi bi-activity"></i></div><strong id="summaryActivity">—</strong><small>View state-to-device activity</small></button>
       <div class="summary-stat"><div class="stat-label">Open support tickets<i class="bi bi-chat-square-text"></i></div><strong id="summaryTickets">—</strong><small>Sample unresolved complaints</small></div>
     </div>
     <div class="overview-summary"><div><strong>From classroom activity to programme insight</strong><p>Track school usage, learning adoption, and device health across the programme.</p></div><button type="button" onclick="switchTab('view-device')">View device monitoring <i class="bi bi-arrow-right ms-1"></i></button></div>
@@ -263,7 +228,7 @@ table.data-table td {
     <div class="row g-2" id="kpiRow">
       <!-- Box 1: Device -->
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight">
+        <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight" onclick="switchTab('view-device')" role="button" tabindex="0">
           <div class="d-flex align-items-start justify-content-between mb-2">
             <div>
               <div class="kpi-label font-display">Device activity</div>
@@ -292,7 +257,7 @@ table.data-table td {
 
       <!-- Box 2: Application usage -->
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight">
+        <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight" onclick="switchTab('view-app')" role="button" tabindex="0">
           <div class="d-flex align-items-start justify-content-between mb-1">
             <div>
               <div class="kpi-label font-display">Application usage</div>
@@ -326,7 +291,7 @@ table.data-table td {
 
       <!-- Box 3: Content usage -->
       <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight">
+        <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight" onclick="switchTab('view-content')" role="button" tabindex="0">
           <div class="d-flex align-items-start justify-content-between mb-2">
             <div>
               <div class="kpi-label font-display">Content usage</div>
@@ -388,85 +353,33 @@ table.data-table td {
       </div>
     </div>
 
-    <!-- Top/Schools needing attention Section (Highlighted Cards) -->
-    <div class="d-flex align-items-center justify-content-between mt-4 mb-2 px-1">
-      <div class="d-flex align-items-center gap-2">
-        <span class="dot" style="background:var(--purple); box-shadow:0 0 10px var(--purple);"></span>
-        <span style="font-size: 14px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.3px;">School performance</span>
-      </div>
-    </div>
-
-    <div class="row g-3 pb-4">
-      <!-- Highest usage Card (Highlighted Teal Container) -->
-      <div class="col-12 col-lg-6">
-        <div class="card-surface p-0 overflow-hidden" style="border: 1px solid rgba(0, 229, 153, 0.45); box-shadow: 0 6px 24px rgba(0, 229, 153, 0.15); border-radius: 14px; background: linear-gradient(180deg, rgba(0, 229, 153, 0.06) 0%, rgba(13, 17, 30, 0.95) 100%);">
-          <div class="perf-head p-3 d-flex align-items-center justify-content-between" style="border-bottom: 1px solid rgba(0, 229, 153, 0.25); background: rgba(0, 229, 153, 0.1);">
-            <div class="d-flex align-items-center gap-2">
-              <span class="sq" style="background:var(--teal); box-shadow: 0 0 8px var(--teal);"></span>
-              <span class="perf-tag font-display fw-bold" style="color:var(--teal); font-size:13.5px;">Highest usage</span>
-            </div>
-            <span class="badge" style="background:rgba(0, 229, 153, 0.2); color:var(--teal); border:1px solid rgba(0,229,153,0.4); font-size:10.5px; padding:3px 8px;">
-              <i class="bi bi-trophy-fill me-1" style="color:#FBBF24;"></i>Highest Usage
-            </span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table table-hover mb-0">
-              <thead style="background: rgba(0, 229, 153, 0.08); border-bottom: 1px solid rgba(0, 229, 153, 0.2);">
-                <tr>
-                  <th style="padding:10px 12px; color:var(--teal); font-weight:700;">Name</th>
-                  <th style="padding:10px 12px; color:var(--teal); font-weight:700;">Shift</th>
-                  <th class="text-end" style="padding:10px 12px; color:var(--teal); font-weight:700;">Avg. Usage Hrs</th>
-                </tr>
-              </thead>
-              <tbody id="topTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Schools needing attention Card (Highlighted Coral Container) -->
-      <div class="col-12 col-lg-6">
-        <div class="card-surface p-0 overflow-hidden" style="border: 1px solid rgba(255, 77, 121, 0.45); box-shadow: 0 6px 24px rgba(255, 77, 121, 0.15); border-radius: 14px; background: linear-gradient(180deg, rgba(255, 77, 121, 0.06) 0%, rgba(13, 17, 30, 0.95) 100%);">
-          <div class="perf-head p-3 d-flex align-items-center justify-content-between" style="border-bottom: 1px solid rgba(255, 77, 121, 0.25); background: rgba(255, 77, 121, 0.1);">
-            <div class="d-flex align-items-center gap-2">
-              <span class="sq" style="background:var(--coral); box-shadow: 0 0 8px var(--coral);"></span>
-              <span class="perf-tag font-display fw-bold" style="color:var(--coral); font-size:13.5px;">Schools needing attention</span>
-            </div>
-            <span class="badge" style="background:rgba(255, 77, 121, 0.2); color:var(--coral); border:1px solid rgba(255,77,121,0.4); font-size:10.5px; padding:3px 8px;">
-              <i class="bi bi-exclamation-triangle-fill me-1"></i>Needs Attention
-            </span>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table table-hover mb-0">
-              <thead style="background: rgba(255, 77, 121, 0.08); border-bottom: 1px solid rgba(255, 77, 121, 0.2);">
-                <tr>
-                  <th style="padding:10px 12px; color:var(--coral); font-weight:700;">Name</th>
-                  <th style="padding:10px 12px; color:var(--coral); font-weight:700;">Shift</th>
-                  <th class="text-end" style="padding:10px 12px; color:var(--coral); font-weight:700;">Avg. Usage Hrs</th>
-                </tr>
-              </thead>
-              <tbody id="botTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+<div id="overviewGeographyCard" class="card-surface national-geography-card">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div><h2 class="section-title">Programme coverage</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div>
+    <div class="d-flex gap-2"><button id="coverageBackBtn" type="button" class="heading-action" onclick="coverageGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button><button type="button" class="heading-action" onclick="exportNationalReport('view-overview','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-overview','pdf')">PDF</button></div>
+  </div>
+  <div class="coverage-view-tabs" role="tablist" aria-label="Programme coverage view">
+    <button id="coverageTabularTab" class="coverage-view-tab" type="button" role="tab" aria-selected="true" aria-controls="coverageTablePanel" onclick="setCoverageView('tabular')" onkeydown="coverageTabKey(event,'tabular')"><i class="bi bi-table" aria-hidden="true"></i> Tabular</button>
+    <button id="coverageGraphicalTab" class="coverage-view-tab" type="button" role="tab" aria-selected="false" aria-controls="coverageGraphicalPanel" tabindex="-1" onclick="setCoverageView('graphical')" onkeydown="coverageTabKey(event,'graphical')"><i class="bi bi-map" aria-hidden="true"></i> Graphical</button>
+  </div>
+  <div id="coverageLocation" class="coverage-location" aria-live="polite"></div>
+  <section id="coverageTablePanel" role="tabpanel" aria-labelledby="coverageTabularTab"><div class="table-responsive coverage-table"><table class="data-table w-100"><thead id="overviewGeoThead"></thead><tbody id="overviewGeoTbody"></tbody></table></div></section>
+  <section id="coverageGraphicalPanel" role="tabpanel" aria-labelledby="coverageGraphicalTab" hidden>
+    <div class="coverage-graph-layout"><div class="coverage-map-panel"><div class="coverage-map-heading"><h3 id="coverageMapTitle">India programme coverage</h3><span>Click a state to explore</span></div><div id="coverageMap" class="coverage-india-map"></div><div id="coverageMapLegend" class="coverage-map-legend"></div><small class="coverage-map-credit">Map: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> · <a href="https://github.com/Vardhan-Systems/vardhan-maps" target="_blank" rel="noopener">Vardhan Maps</a></small></div><div class="coverage-chart-panel"><h3 id="coverageChartTitle">Programme schools by state</h3><p id="coverageMapNote" class="coverage-map-note"></p><div id="coverageChart" class="coverage-bar-chart"></div></div></div>
+  </section>
+</div>
+<div class="card-surface" id="nationalPerformanceCard"><div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"><div><h2 id="nationalPerformanceTitle" class="section-title">Programme utilisation</h2><p id="nationalPerformanceSubtitle" class="section-sub mt-1">Compare usage across the selected scope.</p></div><div class="d-flex flex-wrap gap-2"><label class="visually-hidden" for="performanceLevelSelect">Compare by</label><select id="performanceLevelSelect" class="form-select" style="width:140px" onchange="nationalPerformanceChoice=this.value;nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"></select><label class="visually-hidden" for="performanceSort">Sort utilisation</label><select id="performanceSort" class="form-select" style="width:175px" onchange="nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"><option value="low">Low usage first</option><option value="high">High usage first</option><option value="name">Name A–Z</option></select></div></div><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><label class="visually-hidden" for="performanceSearch">Search utilisation</label><input id="performanceSearch" type="search" class="form-control" placeholder="Search a state, district, block, or school" style="max-width:340px" oninput="nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"><small class="text-muted">Usage per device, rather than total volume</small></div><div class="table-responsive"><table class="data-table w-100"><thead id="performanceThead"></thead><tbody id="performanceTbody"></tbody></table></div><div class="d-flex justify-content-between align-items-center gap-2 mt-3"><small id="performanceEntries" class="text-muted"></small><div class="d-flex gap-2"><button id="performancePrevious" class="heading-action" type="button" onclick="changeNationalPerformancePage(-1)">Previous</button><button id="performanceNext" class="heading-action" type="button" onclick="changeNationalPerformancePage(1)">Next</button></div></div></div>
   </div>
 
   <!-- VIEW: DEVICE (School-wise, Block-wise, District-wise drilldown) -->
-  <div id="view-device" class="view-section">
-
-    <div class="overview-summary"><div><strong>Connected device operations</strong><p>View classroom device health and preview remote device actions.</p></div><span class="demo-badge">Dummy data · MDM workflow</span></div>
-    <div class="summary-strip" aria-label="MDM device health summary">
-      <div class="summary-stat"><div class="stat-label">Devices online</div><strong id="mdmOnline">—</strong><small>In the displayed sample fleet</small></div>
+  <div id="view-device" class="view-section"><p class="section-title mb-3">Device health summary</p><div class="summary-strip" aria-label="MDM device health summary">
+      <div class="summary-stat"><div class="stat-label">Devices online</div><strong id="mdmOnline">—</strong><small>In the selected geography</small></div>
       <div class="summary-stat"><div class="stat-label">Devices offline</div><strong id="mdmOffline">—</strong><small>Commands queued until reconnect</small></div>
-      <div class="summary-stat"><div class="stat-label">Average storage used</div><strong id="mdmStorage">—</strong><small>Across the displayed sample fleet</small></div>
+      <div class="summary-stat"><div class="stat-label">Average storage used</div><strong id="mdmStorage">—</strong><small>Across the selected devices</small></div>
       <div class="summary-stat"><div class="stat-label">Application alerts</div><strong id="mdmAlerts">—</strong><small>Devices requiring attention</small></div>
-    </div>
-    <div class="card-surface"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Device health</h2><p class="section-sub mt-1">Connectivity, uptime, storage, application health, and usage synchronisation</p></div><button class="heading-action" type="button" onclick="refreshMdmDemo()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh status</button></div>
-      <div class="table-responsive"><table class="data-table w-100 mdm-health-table"><thead><tr><th>Device / classroom</th><th>School</th><th>Connection</th><th>Uptime</th><th>Storage used</th><th>Application health</th><th>Usage sync</th><th>Action</th></tr></thead><tbody id="mdmHealthBody"></tbody></table></div>
-    </div>
-    <div class="row g-3 mb-3">
+    </div><div id="deviceWorkflowCard" class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mb-3"><div><h2 id="deviceWorkflowTitle" class="section-title">Device usage by state</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button type="button" class="heading-action" onclick="exportNationalReport('view-device','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-device','pdf')">PDF</button></div></div><div class="table-responsive admin-usage-table"><table class="data-table w-100"><thead id="deviceThead"></thead><tbody id="deviceTbody"></tbody></table></div></div><div id="mdmDeviceDetail" hidden><div class="card-surface"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Device health</h2><p class="section-sub mt-1">Connectivity, uptime, storage, application health, and usage synchronisation</p></div><button class="heading-action" type="button" onclick="refreshMdmDemo()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh status</button></div>
+      <div class="table-responsive"><table class="data-table w-100 mdm-health-table"><thead><tr><th>Device serial number</th><th>School</th><th>Connection</th><th>Uptime</th><th>Storage used</th><th>Application health</th><th>Usage sync</th><th>Action</th></tr></thead><tbody id="mdmHealthBody"></tbody></table></div>
+    </div><div class="row g-3 mb-3">
       <div class="col-12 col-lg-5"><div class="card-surface h-100"><h2 class="section-title mb-2">Send device command</h2><p class="section-sub mb-3">Choose one device and an action. Offline devices receive queued commands after reconnecting.</p>
         <form id="mdmCommandForm" onsubmit="event.preventDefault(); submitMdmCommand();">
           <label for="mdmDeviceSelect" class="filter-label">Target device</label><select id="mdmDeviceSelect" class="form-select mb-3" required onchange="updateMdmTarget()"><option value="">Select a device</option></select>
@@ -476,22 +389,7 @@ table.data-table td {
         </form><p class="section-sub mt-3 mb-0">Prototype demonstration — no live device commands are sent.</p>
       </div></div>
       <div class="col-12 col-lg-7"><div class="card-surface h-100"><h2 class="section-title mb-2">Command activity</h2><p class="section-sub mb-3">Track pending, queued, and completed commands for this preview session.</p><div class="table-responsive"><table class="data-table w-100"><thead><tr><th>Reference</th><th>Device</th><th>Command</th><th>Status</th></tr></thead><tbody id="mdmCommandBody"><tr><td colspan="4" class="text-center py-4">No commands sent in this session.</td></tr></tbody></table></div></div></div>
-    </div>
-    <div class="card-surface mt-2 mb-4">
-      <div class="perf-head border-0 pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <span class="perf-tag"><i class="bi bi-display me-1"></i>Device Usage &amp; Telemetry Data</span>
-        <span class="badge" style="background:var(--purple-bg); color:var(--purple); border:1px solid rgba(139,92,246,0.35); font-size:11px; padding:4px 10px;">
-          <i class="bi bi-cpu me-1"></i>District &bull; Zone / Block &bull; School Level Drilldown
-        </span>
-      </div>
-      <div class="table-responsive p-3">
-        <table class="data-table table-hover">
-          <thead id="deviceThead"></thead>
-          <tbody id="deviceTbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+    </div></div></div>
 
   <!-- VIEW: APP USAGE -->
   <div id="view-app" class="view-section">
@@ -531,7 +429,7 @@ table.data-table td {
   </div>
 
   <!-- VIEW: CONTENT -->
-  <div id="view-content" class="view-section">
+  <div id="view-content" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Content usage by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button type="button" class="heading-action" onclick="exportNationalReport('view-content','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-content','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="contentGeoThead"></thead><tbody id="contentGeoTbody"></tbody></table></div></div>
     <!-- Dedicated Custom Usage Reports Module (Subject, Class, Teacher, School) -->
     <div id="reportModuleCustomUsage" class="mt-2 mb-4">
       <!-- Header Controls & Sub-Tabs -->
@@ -692,7 +590,7 @@ table.data-table td {
           <table class="data-table table-hover">
             <thead>
               <tr>
-                <th>School / Room</th>
+                <th>School / Device</th>
                 <th>Make & Model</th>
                 <th>Processor</th>
                 <th>RAM/Storage</th>
@@ -941,25 +839,7 @@ table.data-table td {
   </div>
 
   <!-- VIEW: COMPLAINTS -->
-  <div id="view-complaints" class="view-section">
-    <div class="card-surface mt-2 mb-4 p-0" style="overflow: hidden;">
-      <div class="perf-head p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <span class="perf-tag font-display" style="font-size:14px; font-weight:700;">
-          <i class="bi bi-info-circle me-1.5 text-primary"></i>Complaints &amp; Support Tickets Data
-        </span>
-        <button class="btn btn-sm btn-register-complaint d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#registerComplaintModal">
-          <i class="bi bi-plus-lg"></i>
-          <span>Register Complaint</span>
-        </button>
-      </div>
-      <div class="table-responsive p-3 pt-0">
-        <table class="data-table table-hover mb-0">
-          <thead id="complaintsThead"></thead>
-          <tbody id="complaintsTbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <div id="view-complaints" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Support tickets by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="complaintGeoThead"></thead><tbody id="complaintGeoTbody"></tbody></table></div></div><button class="heading-action" type="button" data-bs-toggle="modal" data-bs-target="#registerComplaintModal">Register complaint</button></div>
   <!-- VIEW: AUDIT LOGS -->
   <div id="view-audit" class="view-section">
     <div class="card-surface mt-2 mb-4 p-3">
@@ -1090,7 +970,7 @@ table.data-table td {
             <div class="row g-2 mb-2">
               <div class="col-6">
                 <label class="form-label mb-1" style="font-size: 11px; font-weight: 600; color: var(--navy);">School ID / UDISE</label>
-                <input type="text" class="form-control form-control-sm" placeholder="e.g. 1000000" required style="border-radius: 6px; font-size: 12px; height: 32px;">
+                <input type="text" class="form-control form-control-sm" placeholder="UDISE or school name" required style="border-radius: 6px; font-size: 12px; height: 32px;">
               </div>
               <div class="col-6">
                 <label class="form-label mb-1" style="font-size: 11px; font-weight: 600; color: var(--navy);">Contact Number</label>
@@ -2524,61 +2404,6 @@ function renderOverview(scope, f) {
   set('appOthers', appOtPct + '%');
   appChart.updateData([appYtPct, appBrPct, appOfPct, appSbPct, appNtPct, appOtPct]);
 
-  // School Performance Rankings
-  let rank = scope.map(s => {
-    const rawHrs = (s.rec.baseHrs || 3.0) * f;
-    const h = Math.floor(rawHrs);
-    const m = Math.floor((rawHrs - h) * 60);
-    const sSec = Math.floor(((rawHrs - h) * 60 - m) * 60);
-    const hrsStr = `${h < 10 ? '0' + h : h}:${m < 10 ? '0' + m : m}:${sSec < 10 ? '0' + sSec : sSec}`;
-    
-    let shiftBadge = '';
-    const shiftVal = (s.rec.shift === 'Evening') ? 'Evening' : 'Morning';
-    if (shiftVal === 'Evening') {
-      shiftBadge = `<span class="badge" style="background:rgba(245,158,11,0.15); color:var(--amber); border:1px solid rgba(245,158,11,0.35); font-size:10.5px; padding:3px 7px; font-weight:600;"><i class="bi bi-moon-stars-fill me-1" style="font-size:10px; color:#F59E0B;"></i>Evening</span>`;
-    } else {
-      shiftBadge = `<span class="badge" style="background:rgba(0,178,254,0.15); color:var(--cyan); border:1px solid rgba(0,178,254,0.35); font-size:10.5px; padding:3px 7px; font-weight:600;"><i class="bi bi-sun-fill me-1" style="font-size:10px; color:#FBBF24;"></i>Morning</span>`;
-    }
-
-    return {
-      l: s.name,
-      shiftBadge: shiftBadge,
-      rawHrs: rawHrs,
-      avgHrsStr: hrsStr
-    };
-  }).sort((a, b) => b.rawHrs - a.rawHrs);
-
-  const getRankBadge = (rankNum, isTop) => {
-    if (isTop) {
-      return `<span class="badge" style="background:rgba(0,229,153,0.15); color:var(--teal); border:1px solid rgba(0,229,153,0.35); border-radius:50%; width:22px; height:22px; min-width:22px; min-height:22px; flex:none; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; padding:0 !important; margin:0; line-height:1; box-sizing:border-box;">${rankNum}</span>`;
-    } else {
-      return `<span class="badge" style="background:rgba(255,77,121,0.15); color:var(--coral); border:1px solid rgba(255,77,121,0.35); border-radius:50%; width:22px; height:22px; min-width:22px; min-height:22px; flex:none; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:11px; padding:0 !important; margin:0; line-height:1; box-sizing:border-box;">${rankNum}</span>`;
-    }
-  };
-
-  const row = (r, i, k) => {
-    const isTop = (k === 'top');
-    const bgClass = isTop ? (i <= 3 ? 'perf-row-top perf-row-top-top3' : 'perf-row-top') : (i >= 8 ? 'perf-row-bot perf-row-bot-bot3' : 'perf-row-bot');
-    const badgeColor = isTop ? 'background:rgba(0,229,153,0.12); color:var(--teal); border:1px solid rgba(0,229,153,0.35);' : 'background:rgba(255,77,121,0.12); color:var(--coral); border:1px solid rgba(255,77,121,0.35);';
-
-    return `<tr class="${bgClass}">
-      <td style="padding: 9px 12px;">
-        <span class="d-flex align-items-center gap-2" style="font-size:11.5px;">
-          ${getRankBadge(i, isTop)}
-          <span class="perf-school-name fw-semibold">${r.l}</span>
-        </span>
-      </td>
-      <td style="padding: 9px 12px;">${r.shiftBadge}</td>
-      <td class="text-end" style="padding: 9px 12px;">
-        <span class="badge font-mono" style="${badgeColor} font-size:11.5px; padding:4px 9px; font-weight:700;">
-          <i class="bi bi-clock-fill me-1" style="font-size:10px;"></i>${r.avgHrsStr}
-        </span>
-      </td>
-    </tr>`;
-  };
-
-  document.getElementById('topTableBody').innerHTML = rank.slice(0, 10).map((r, i) => row(r, i + 1, 'top')).join('');
-  document.getElementById('botTableBody').innerHTML = rank.slice(-10).reverse().map((r, i) => row(r, i + 1, 'bot')).join('');
 }
 
 function renderDeviceTable(scope, f, dVal, zVal, sVal, type) {
@@ -5090,7 +4915,11 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
   });
 }
 </script>
+<script src="js/school-data.js"></script>
 <script src="js/professional.js"></script>
 <script src="js/mdm-prototype.js"></script>
+<script src="js/india-map-data.js"></script>
+<script src="js/national-prototype.js"></script>
+<script src="js/compact-filters.js"></script>
 </body>
 </html>

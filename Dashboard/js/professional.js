@@ -217,7 +217,7 @@ function exportTableReport(tableId, format, title) {
   if (!table) return showPrototypeMessage('The selected report is unavailable.');
   const rows = reportRows(table);
   if (rows.length < 2) return showPrototypeMessage('No records match this view. Adjust the filters and try again.');
-  const context = `Scope: ${DOM.state.value === 'ALL' ? 'All available states (Delhi demo)' : DOM.state.value} | Dates: ${DOM.fDate.value} to ${DOM.tDate.value} | School ID: ${DOM.schId.value || 'All'} | Exported: ${localDateString(new Date())}`;
+  const context = `Scope: ${typeof getSelectedStateLabel === 'function' ? getSelectedStateLabel() : DOM.state.value} | Dates: ${DOM.fDate.value} to ${DOM.tDate.value} | School ID: ${DOM.schId.value || 'All'} | Exported: ${localDateString(new Date())}`;
   const name = 'ERNET_' + title.replace(/[^a-zA-Z0-9]+/g, '_');
   if (format === 'excel') saveReport(makeWorkbook(rows, title, context), name + '.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   else saveReport(makePdf(rows, title, context), name + '.pdf', 'application/pdf');

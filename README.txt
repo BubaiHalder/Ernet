@@ -16,5 +16,5 @@ https://bubaihalder.github.io/Ernet/Dashboard/
 https://bubaihalder.github.io/Ernet/Dashboard2/
 Preview selector: https://bubaihalder.github.io/Ernet/
 
-All interactions use dummy data. The previews are for design approval.
+Device metrics, usage, tickets and commands use dummy data. Dashboard includes the school geographic directory and offline India map assets. The previews are for design approval.
 To update, replace the corresponding folder with its static files and assets, commit, and push.
