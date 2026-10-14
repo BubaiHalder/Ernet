@@ -120,14 +120,14 @@ render = function () {
     document.getElementById('mdmDeviceDetail').hidden=!nationalPath.school;
     if(nationalPath.school)renderMdmFleet(scope);
   }
-  document.getElementById('reportModuleCustomUsage').style.display=currentView==='view-content' && nationalPath.school?'block':'none';
-  if(currentView==='view-content' && nationalPath.school)renderCustomReportTable();
+  document.getElementById('reportModuleCustomUsage').style.display=currentView==='view-content'?'block':'none';
+  if(currentView==='view-content')renderCustomReportTable();
   if(currentView==='view-audit')renderAuditLogsTable();
   if(currentView==='view-reports')renderSpecs(scope);
 };
 updateBreadcrumb = updateNationalBreadcrumb;
 const originalNationalSwitchTab=switchTab;
-switchTab=function(view){originalNationalSwitchTab(view);if(view==='view-content')document.getElementById('reportModuleCustomUsage').style.display=nationalPath.school?'block':'none';};
+switchTab=function(view){originalNationalSwitchTab(view);if(view==='view-content')document.getElementById('reportModuleCustomUsage').style.display='block';};
 const previousNationalExport=exportTableReport;
 exportTableReport=function(id,format,title){return previousNationalExport(id,format,title);};
 function exportNationalReport(view,format) {

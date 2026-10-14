@@ -1,0 +1,20 @@
+/* Client-supplied ERNET logo: preserve its proportions and original artwork. */
+html[data-theme] body.professional-dashboard .navbar-custom img.ernet-client-logo {
+  height: 44px !important;
+  width: auto;
+  max-width: 155px;
+  object-fit: contain;
+  box-sizing: content-box;
+  padding: 3px 7px;
+  background: #fff;
+  border-radius: 5px;
+  filter: none !important;
+  flex-shrink: 0;
+}
+@media (max-width: 575px) {
+  html[data-theme] body.professional-dashboard .navbar-custom img.ernet-client-logo {
+    height: 32px !important;
+    max-width: 105px;
+    padding: 3px 5px;
+  }
+}

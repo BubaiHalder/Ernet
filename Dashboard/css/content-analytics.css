@@ -1,0 +1,3 @@
+﻿.analytics-scope-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin:24px 0 14px}.analytics-scope-heading .section-sub{margin-top:8px;font-size:11px;line-height:1.7}#analyticsBackButton[hidden]{display:none!important}#reportModuleCustomUsage .btn-group .btn{font-size:12px}#reportModuleCustomUsage .table-responsive{max-height:520px;overflow:auto!important}#reportModuleCustomUsage #customReportThead th{position:sticky;top:0;z-index:1;background:var(--surface)}#reportModuleCustomUsage #customReportTbody .national-drill-link{white-space:normal}#reportModuleCustomUsage #customReportSearchInput{max-width:100%}
+
+#contentLocationBackButton:disabled,#analyticsBackButton:disabled{opacity:.45;cursor:default}

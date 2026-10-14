@@ -153,6 +153,8 @@ table.data-table td {
 
 <link href="css/professional.css?v=20261014-district" rel="stylesheet">
 <link href="css/performance-rankings.css?v=20261014-rankings" rel="stylesheet">
+<link href="css/content-analytics.css?v=20261014-content-back" rel="stylesheet">
+<link href="css/ernet-client-logo.css?v=20261014-logo" rel="stylesheet">
 </head>
 <body class="professional-dashboard">
 
@@ -160,7 +162,7 @@ table.data-table td {
   <div class="container-fluid d-flex align-items-center">
     <!-- Official ERNET India Logo -->
     <a href="#" class="d-flex align-items-center text-decoration-none" title="ERNET India - Education &amp; Research Network">
-      <img src="images/ernet-logo-header.svg" alt="ERNET India - Education &amp; Research Network" height="42" class="d-inline-block align-text-top" style="filter: drop-shadow(0 2px 8px rgba(0,168,236,0.25));">
+      <img src="images/ernet-client-logo.jpeg" alt="ERNET India — Education &amp; Research Network" width="291" height="103" class="d-inline-block align-text-top ernet-client-logo">
     </a>
     <div class="brand-caption">Project Monitoring Dashboard<small>Digital teaching devices · KGBV programme</small></div>
     <div class="header-session"><span class="demo-badge">Client preview · Sample data</span><span class="avatar" aria-hidden="true">EA</span><div class="session-copy">ERNET administrator<small>Demonstration workspace</small></div></div>
@@ -430,9 +432,10 @@ table.data-table td {
   </div>
 
   <!-- VIEW: CONTENT -->
-  <div id="view-content" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Content usage by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button type="button" class="heading-action" onclick="exportNationalReport('view-content','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-content','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="contentGeoThead"></thead><tbody id="contentGeoTbody"></tbody></table></div></div>
+  <div id="view-content" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Content usage by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button id="contentLocationBackButton" type="button" class="heading-action" onclick="contentLocationGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button><button type="button" class="heading-action" onclick="exportNationalReport('view-content','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-content','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="contentGeoThead"></thead><tbody id="contentGeoTbody"></tbody></table></div></div>
     <!-- Dedicated Custom Usage Reports Module (Subject, Class, Teacher, School) -->
     <div id="reportModuleCustomUsage" class="mt-2 mb-4">
+      <div class="analytics-scope-heading"><div><h2 class="section-title">Usage Analytics</h2><p id="analyticsScopeNote" class="section-sub"></p></div><button id="analyticsBackButton" type="button" class="heading-action" onclick="analyticsGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button></div>
       <!-- Header Controls & Sub-Tabs -->
       <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2 p-2 rounded-3" style="background: rgba(19, 26, 43, 0.85); border: 1px solid var(--line);">
         <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -4921,8 +4924,9 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 <script src="js/mdm-prototype.js"></script>
 <script src="js/india-map-data.js"></script>
 <script src="js/india-district-map-data.js?v=20261014-district"></script>
-<script src="js/national-prototype.js?v=20261014-district"></script>
+<script src="js/national-prototype.js?v=20261014-content-back"></script>
 <script src="js/compact-filters.js"></script>
 <script src="js/performance-rankings.js?v=20261014-rankings"></script>
+<script src="js/content-analytics.js?v=20261014-content-back"></script>
 </body>
 </html>
