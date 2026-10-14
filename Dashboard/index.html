@@ -151,7 +151,7 @@ table.data-table td {
 </style>
 
 
-<link href="css/professional.css?v=20261014-district" rel="stylesheet">
+<link href="css/professional.css?v=20261014-app-toolbar" rel="stylesheet">
 <link href="css/performance-rankings.css?v=20261014-rankings" rel="stylesheet">
 <link href="css/content-analytics.css?v=20261014-content-back" rel="stylesheet">
 <link href="css/ernet-client-logo.css?v=20261014-logo" rel="stylesheet">
@@ -384,7 +384,7 @@ table.data-table td {
       <div class="summary-stat"><div class="stat-label">Devices offline</div><strong id="mdmOffline">—</strong><small>Commands queued until reconnect</small></div>
       <div class="summary-stat"><div class="stat-label">Average storage used</div><strong id="mdmStorage">—</strong><small>Across the selected devices</small></div>
       <div class="summary-stat"><div class="stat-label">Application alerts</div><strong id="mdmAlerts">—</strong><small>Devices requiring attention</small></div>
-    </div><div id="deviceWorkflowCard" class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mb-3"><div><h2 id="deviceWorkflowTitle" class="section-title">Device usage by state</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button type="button" class="heading-action" onclick="exportNationalReport('view-device','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-device','pdf')">PDF</button></div></div><div class="table-responsive admin-usage-table"><table class="data-table w-100"><thead id="deviceThead"></thead><tbody id="deviceTbody"></tbody></table></div></div><div id="mdmDeviceDetail" hidden><div class="card-surface"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Device health</h2><p class="section-sub mt-1">Connectivity, uptime, storage, application health, and usage synchronisation</p></div><button class="heading-action" type="button" onclick="refreshMdmDemo()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh status</button></div>
+    </div><div id="deviceWorkflowCard" class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center gap-2 flex-wrap mb-3"><div><h2 id="deviceWorkflowTitle" class="section-title">Device usage by state</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button id="deviceBackButton" type="button" class="heading-action module-back-button" onclick="nationalModuleGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button><button type="button" class="heading-action" onclick="exportNationalReport('view-device','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-device','pdf')">PDF</button></div></div><div class="table-responsive admin-usage-table"><table class="data-table w-100"><thead id="deviceThead"></thead><tbody id="deviceTbody"></tbody></table></div></div><div id="mdmDeviceDetail" hidden><div class="card-surface"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Device health</h2><p class="section-sub mt-1">Connectivity, uptime, storage, application health, and usage synchronisation</p></div><button class="heading-action" type="button" onclick="refreshMdmDemo()"><i class="bi bi-arrow-clockwise me-1"></i>Refresh status</button></div>
       <div class="table-responsive"><table class="data-table w-100 mdm-health-table"><thead><tr><th>Device serial number</th><th>School</th><th>Connection</th><th>Uptime</th><th>Storage used</th><th>Application health</th><th>Usage sync</th><th>Action</th></tr></thead><tbody id="mdmHealthBody"></tbody></table></div>
     </div><div class="row g-3 mb-3">
       <div class="col-12 col-lg-5"><div class="card-surface h-100"><h2 class="section-title mb-2">Send device command</h2><p class="section-sub mb-3">Choose one device and an action. Offline devices receive queued commands after reconnecting.</p>
@@ -401,14 +401,15 @@ table.data-table td {
   <!-- VIEW: APP USAGE -->
   <div id="view-app" class="view-section">
     <div class="card-surface mt-2 mb-4 p-0" style="overflow: hidden;">
-      <div class="perf-head p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="perf-head application-toolbar p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
         <span class="perf-tag font-display" style="font-size:14px; font-weight:700;">
           <i class="bi bi-grid-3x3-gap-fill me-1.5 text-primary"></i>Applications Usage &amp; Analytics Data
         </span>
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-          <div class="d-flex align-items-center gap-1.5" style="font-size:12px; color:var(--muted);">
+        <div class="application-toolbar-controls d-flex align-items-center gap-2 flex-wrap">
+          <button id="applicationBackButton" type="button" class="heading-action module-back-button" onclick="nationalModuleGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button>
+          <div class="application-row-count d-flex align-items-center gap-1.5" style="font-size:12px; color:var(--muted);">
             <span>Show</span>
-            <select id="appEntriesSelect" class="form-select form-select-sm" style="width:65px; font-size:12px;" onchange="render()">
+            <select id="appEntriesSelect" aria-label="Number of records" class="form-select form-select-sm" style="width:65px; font-size:12px;" onchange="render()">
               <option value="10" selected>10</option>
               <option value="25">25</option>
               <option value="50">50</option>
@@ -416,9 +417,9 @@ table.data-table td {
             </select>
             <span>entries</span>
           </div>
-          <div class="position-relative" style="width:220px;">
+          <div class="application-search position-relative" style="width:220px;">
             <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2.5 text-muted" style="font-size:12px;"></i>
-            <input type="text" class="form-control form-control-sm ps-4" id="appSearchInput" placeholder="Search district, data..." style="font-size:12px;" oninput="render()">
+            <input type="text" class="form-control form-control-sm ps-4" id="appSearchInput" aria-label="Search application usage" placeholder="Search district, data..." style="font-size:12px;" oninput="render()">
           </div>
           <button class="btn btn-sm btn-export-excel d-inline-flex align-items-center gap-1.5" onclick="exportAppUsageTable()">
             <i class="bi bi-download"></i>
@@ -847,7 +848,7 @@ table.data-table td {
   </div>
 
   <!-- VIEW: COMPLAINTS -->
-  <div id="view-complaints" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Support tickets by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="complaintGeoThead"></thead><tbody id="complaintGeoTbody"></tbody></table></div></div><button class="heading-action" type="button" data-bs-toggle="modal" data-bs-target="#registerComplaintModal">Register complaint</button></div>
+  <div id="view-complaints" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Support tickets by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button id="supportBackButton" type="button" class="heading-action module-back-button" onclick="nationalModuleGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="complaintGeoThead"></thead><tbody id="complaintGeoTbody"></tbody></table></div></div><button class="heading-action" type="button" data-bs-toggle="modal" data-bs-target="#registerComplaintModal">Register complaint</button></div>
   <!-- VIEW: AUDIT LOGS -->
   <div id="view-audit" class="view-section">
     <div class="card-surface mt-2 mb-4 p-3">
@@ -4928,7 +4929,7 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 <script src="js/mdm-prototype.js"></script>
 <script src="js/india-map-data.js"></script>
 <script src="js/india-district-map-data.js?v=20261014-district"></script>
-<script src="js/national-prototype.js?v=20261014-content-back"></script>
+<script src="js/national-prototype.js?v=20261014-module-back"></script>
 <script src="js/compact-filters.js"></script>
 <script src="js/performance-rankings.js?v=20261014-rankings"></script>
 <script src="js/content-analytics.js?v=20261014-content-back"></script>

@@ -139,3 +139,16 @@ html[data-theme] body.professional-dashboard .filter-item.w-select{width:250px}.
 html[data-theme] body.professional-dashboard .coverage-bar-row .coverage-bar-label{color:var(--ink)!important}html[data-theme] body.professional-dashboard .coverage-map-legend span{color:var(--muted)!important}.coverage-state-label{font-size:17px}
 
 .coverage-district-label{font-size:8px;font-weight:700;fill:#fff;paint-order:stroke;stroke:#235b8c;stroke-width:1px;pointer-events:none}.coverage-map-children{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:240px;overflow:auto}.coverage-map-children button{border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:10px;text-align:left;color:var(--ink)}.coverage-map-children button:hover,.coverage-map-children button:focus-visible{border-color:var(--cyan);background:var(--cyan-bg)}.coverage-map-children strong{display:block;font-size:11px;overflow-wrap:anywhere}html[data-theme] body.professional-dashboard .coverage-map-children span{display:block;font-size:10px;color:var(--muted)!important;margin-top:5px}.coverage-map-heading>span{display:none}.coverage-map-children~*{margin-top:12px}
+
+.module-back-button:disabled{opacity:.45;cursor:default}
+
+/* Compact controls only in the Applications header. */
+html[data-theme] body.professional-dashboard #view-app .application-toolbar-controls{gap:8px!important;justify-content:flex-end;flex:0 1 auto;min-width:0}
+html[data-theme] body.professional-dashboard #view-app .application-row-count{gap:5px!important;flex:0 0 auto;white-space:nowrap}
+html[data-theme] body.professional-dashboard #view-app .application-row-count span{color:var(--muted)!important;font-size:11px}
+html[data-theme] body.professional-dashboard #view-app #appEntriesSelect{width:64px!important;margin:0!important;flex:none}
+html[data-theme] body.professional-dashboard #view-app .application-search{width:210px!important;flex:0 1 210px;min-width:150px}
+html[data-theme] body.professional-dashboard #view-app .application-search>i{left:11px!important;margin:0!important;pointer-events:none}
+html[data-theme] body.professional-dashboard #view-app #appSearchInput{padding-left:31px!important;width:100%}
+html[data-theme] body.professional-dashboard #view-app .application-toolbar-controls>button{height:38px;min-height:38px;padding:8px 11px;font-size:12px;gap:5px!important;white-space:nowrap}
+@media(max-width:767px){html[data-theme] body.professional-dashboard #view-app .application-toolbar-controls{display:grid!important;grid-template-columns:auto 1fr auto;width:100%;gap:9px!important}html[data-theme] body.professional-dashboard #view-app .application-search{grid-column:1 / -1;grid-row:2;width:100%!important;min-width:0}html[data-theme] body.professional-dashboard #view-app .application-row-count{justify-content:center}html[data-theme] body.professional-dashboard #view-app .application-toolbar-controls>button{height:40px}}

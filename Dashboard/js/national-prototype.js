@@ -255,6 +255,8 @@ function nationalDailyDetail(view,scope,ids) {
 }
 function renderNationalTable(view,scope) {
   const ids=nationalTableIds(view);if(!ids)return;
+  const canGoBack=['state','district','block','school','device'].some(key=>Boolean(nationalPath[key]));
+  for(const id of ['deviceBackButton','applicationBackButton','supportBackButton']){const button=document.getElementById(id);if(button)button.disabled=!canGoBack;}
   const title=view==='view-device'?document.getElementById('deviceWorkflowTitle'):null;
   if(nationalPath.device){if(view==='view-overview')renderCoverageMap(scope);if(title)title.textContent='Daily device usage';nationalDailyDetail(view,scope,ids);document.querySelectorAll('[data-national-level]').forEach(el=>el.textContent=currentView==='view-complaints'?'Device ticket history':'Date-wise usage');return;}
   let rows=nationalHierarchyRows(scope);if(view==='view-overview')rows=rows.filter(row=>row.kind!=='pending');
@@ -398,4 +400,10 @@ function renderCoverageMap(scope) {
     const subtitle=row.kind==='state'?districts+' districts · '+blocks+' blocks':row.kind==='district'?blocks+' blocks':row.kind==='school'?'UDISE: '+(row.items[0]?.udise||'Not provided'):row.kind==='device'?'Dummy serial number':'Programme schools';
     return '<button type="button" class="coverage-bar-row" onclick="coverageDrill('+index+')"><span class="coverage-bar-label">'+escapeHtml(row.label)+'<small>'+escapeHtml(subtitle)+'</small></span><span class="coverage-bar-track"><span style="width:'+count/max*100+'%"></span></span><strong>'+count+'</strong><i class="bi bi-chevron-right" aria-hidden="true"></i></button>';
   }).join(''):'<p class="coverage-map-note">No records match these filters.</p>';
+}
+
+function nationalModuleGoBack() {
+  if(!['state','district','block','school','device'].some(key=>Boolean(nationalPath[key])))return;
+  if(currentView==='view-app')document.getElementById('appSearchInput').value='';
+  coverageGoBack();
 }
