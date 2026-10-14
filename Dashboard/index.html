@@ -155,16 +155,19 @@ table.data-table td {
 <link href="css/performance-rankings.css?v=20261014-rankings" rel="stylesheet">
 <link href="css/content-analytics.css?v=20261014-content-back" rel="stylesheet">
 <link href="css/ernet-client-logo.css?v=20261014-logo" rel="stylesheet">
+<link href="css/workspace-shell.css?v=20261014-fixed" rel="stylesheet">
+<link href="css/mobile-dashboard.css?v=20261014-phone" rel="stylesheet">
 </head>
 <body class="professional-dashboard">
 
 <nav class="navbar navbar-custom py-2 px-3 px-md-4">
   <div class="container-fluid d-flex align-items-center">
+    <button id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainTabs"><i class="bi bi-list" aria-hidden="true"></i></button>
     <!-- Official ERNET India Logo -->
     <a href="#" class="d-flex align-items-center text-decoration-none" title="ERNET India - Education &amp; Research Network">
       <img src="images/ernet-client-logo.jpeg" alt="ERNET India — Education &amp; Research Network" width="291" height="103" class="d-inline-block align-text-top ernet-client-logo">
     </a>
-    <div class="brand-caption">Project Monitoring Dashboard<small>Digital teaching devices · KGBV programme</small></div>
+    <div class="brand-caption"><span class="desktop-brand-title">Project Monitoring Dashboard</span><span class="mobile-brand-title">ERNET Dashboard</span><small>Digital teaching devices · KGBV programme</small></div>
     <div class="header-session"><span class="demo-badge">Client preview · Sample data</span><span class="avatar" aria-hidden="true">EA</span><div class="session-copy">ERNET administrator<small>Demonstration workspace</small></div></div>
   </div>
 </nav>
@@ -199,6 +202,7 @@ table.data-table td {
   <p id="nationalDataNote" class="section-sub mb-3"></p>
   <!-- Tabs -->
   <ul class="nav nav-tabs" id="mainTabs" aria-label="Main navigation">
+<li class="sidebar-controls"><span class="sidebar-workspace-label">Workspace</span><button id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="mainTabs"><i class="bi bi-layout-sidebar-inset" aria-hidden="true"></i></button></li>
 <li class="nav-item"><a class="nav-link active" href="#view-overview" data-target="view-overview"><i class="bi bi-grid-1x2" aria-hidden="true"></i>Overview</a></li>
 <li class="nav-item"><a class="nav-link" href="#view-device" data-target="view-device"><i class="bi bi-display" aria-hidden="true"></i>Device monitoring</a></li>
 <li class="nav-item"><a class="nav-link" href="#view-app" data-target="view-app"><i class="bi bi-grid" aria-hidden="true"></i>Applications</a></li>
@@ -4928,5 +4932,6 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 <script src="js/compact-filters.js"></script>
 <script src="js/performance-rankings.js?v=20261014-rankings"></script>
 <script src="js/content-analytics.js?v=20261014-content-back"></script>
+<script src="js/workspace-shell.js?v=20261014-phone"></script>
 </body>
 </html>
