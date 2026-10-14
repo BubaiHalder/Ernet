@@ -1,0 +1,49 @@
+.school-rankings { margin-top: 24px; scroll-margin-top: 24px; }
+.school-rankings[hidden] { display: none !important; }
+.school-rankings-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.school-rankings-header .section-sub { margin-top: 7px; }
+.school-rankings-eyebrow { margin: 0 0 8px; font-size: 11px; font-weight: 700; letter-spacing: .12em; color: #3264a2; }
+.school-rankings-demo { padding: 7px 11px; border: 1px solid #dce5f0; border-radius: 7px; white-space: nowrap; font-size: 12px; color: #64748b; }
+.school-rankings-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); background: #f6f9fd; border: 1px solid #e3eaf3; border-radius: 10px; }
+.school-rankings-summary > div { padding: 18px 20px; }
+.school-rankings-summary > div + div { border-left: 1px solid #e3eaf3; }
+.school-rankings-summary span { display: block; color: #64748b; font-size: 13px; margin-bottom: 8px; }
+.school-rankings-summary strong { font-size: 25px; color: #17344f; }
+.school-rankings-summary strong small { font-size: 14px; font-weight: 500; }
+.school-rankings-method,.school-rankings-footnote { color: #64748b; font-size: 12px; line-height: 1.7; margin: 14px 0 20px; }
+.school-rankings-method strong { display: inline-block; margin-left: 5px; font-weight: 500; }
+.school-rankings-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+.school-ranking-panel { min-width: 0; border: 1px solid #e1e8f1; border-radius: 10px; overflow: hidden; }
+.school-ranking-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 18px; background: #f7fafc; border-bottom: 1px solid #e1e8f1; }
+.school-ranking-heading h3 { font-size: 16px; color: #183952; margin: 0; }
+.school-ranking-heading p { font-size: 12px; color: #64748b; margin: 6px 0 0; }
+.school-ranking-count { font-size: 11px; padding: 5px 8px; white-space: nowrap; border-radius: 20px; background: #eaf0f7; color: #49617b; }
+.school-ranking-panel.top .school-ranking-heading { border-top: 3px solid #26867a; }
+.school-ranking-panel.bottom .school-ranking-heading { border-top: 3px solid #b78a44; }
+.school-ranking-table { width: 100%; margin-bottom: 0; font-size: 13px; }
+.school-ranking-table th { font-size: 11px; white-space: normal; }
+.school-ranking-table th:nth-child(2) { min-width: 160px; }
+.school-ranking-table td { padding-top: 14px; padding-bottom: 14px; vertical-align: top; }
+.school-ranking-table .national-drill-link { text-align: left; white-space: normal; }
+.school-ranking-position { display: inline-flex; width: 25px; height: 25px; align-items: center; justify-content: center; background: #edf2f8; border-radius: 6px; color: #425f7c; font-weight: 600; }
+.school-ranking-location,.school-ranking-udise { display: block; font-size: 11px; line-height: 1.55; color: #718096; margin-top: 5px; }
+.school-ranking-location { max-width: 270px; }
+.school-ranking-empty { padding: 30px 20px !important; text-align: center; color: #64748b; }
+.school-rankings-footnote { margin-bottom: 0; }
+[data-theme="dark"] .school-rankings-summary,[data-theme="dark"] .school-ranking-heading { background: #162334; border-color: #304155; }
+[data-theme="dark"] .school-rankings-summary strong,[data-theme="dark"] .school-ranking-heading h3 { color: #e5edf7; }
+[data-theme="dark"] .school-ranking-panel,[data-theme="dark"] .school-rankings-summary > div + div,[data-theme="dark"] .school-rankings-demo { border-color: #304155; }
+[data-theme="dark"] .school-ranking-count,[data-theme="dark"] .school-ranking-position { background: #25394e; color: #c4d5e8; }
+[data-theme="dark"] .school-rankings-eyebrow { color: #8eb8ef; }
+@media(max-width:1200px) { .school-rankings-grid { grid-template-columns: 1fr; } }
+@media(max-width:640px) { .school-rankings-summary { grid-template-columns: repeat(2,minmax(0,1fr)); } .school-rankings-summary > div { padding: 14px; } .school-rankings-summary > div:nth-child(3) { border-left: 0; border-top: 1px solid #e3eaf3; } .school-rankings-summary > div:nth-child(4) { border-top: 1px solid #e3eaf3; } .school-rankings-header { flex-direction: column; } }
+
+.school-rankings-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.school-rankings-completeness { font-size: 12px; color: #64748b; margin: -5px 0 16px; }
+html[data-theme="light"] body.professional-dashboard .school-rankings .school-rankings-summary span { color: #64748b !important; }
+html[data-theme="light"] body.professional-dashboard .school-rankings .school-ranking-count,html[data-theme="light"] body.professional-dashboard .school-rankings .school-ranking-position { color: #425f7c !important; }
+html[data-theme="light"] body.professional-dashboard .school-rankings .school-rankings-demo { color: #64748b !important; }
+html[data-theme="dark"] body.professional-dashboard .school-rankings .school-rankings-summary span,html[data-theme="dark"] body.professional-dashboard .school-rankings .school-rankings-demo { color: #a7b8cc !important; }
+html[data-theme="dark"] body.professional-dashboard .school-rankings .school-ranking-count,html[data-theme="dark"] body.professional-dashboard .school-rankings .school-ranking-position { color: #c4d5e8 !important; }
+
+html[data-theme] body.professional-dashboard .school-rankings-summary strong small{color:var(--muted)!important}

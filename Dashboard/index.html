@@ -152,6 +152,7 @@ table.data-table td {
 
 
 <link href="css/professional.css?v=20261014-district" rel="stylesheet">
+<link href="css/performance-rankings.css?v=20261014-rankings" rel="stylesheet">
 </head>
 <body class="professional-dashboard">
 
@@ -210,7 +211,7 @@ table.data-table td {
   <div id="view-overview" class="view-section active">
     <div class="summary-strip national-summary-strip" aria-label="Selected scope summary">
       <button type="button" class="summary-stat summary-action-card" onclick="nationalShowStates()"><div class="stat-label">States in this view<i class="bi bi-map"></i></div><strong id="summaryStates">—</strong><small>View state-wise school metrics</small></button>
-      <div class="summary-stat"><div class="stat-label">Schools in this view<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>Programme schools in selected scope</small></div>
+      <button type="button" class="summary-stat summary-action-card" onclick="openSchoolRankings()" aria-label="Open Performance Overview and School Rankings"><div class="stat-label">Schools in this view<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>View performance and school rankings</small></button>
       <div class="summary-stat"><div class="stat-label">Teaching devices<i class="bi bi-display"></i></div><strong id="summaryDevices">—</strong><small>Dummy devices for available school records</small></div>
       <button type="button" class="summary-stat summary-action-card" onclick="switchTab('view-device')"><div class="stat-label">Device activity<i class="bi bi-activity"></i></div><strong id="summaryActivity">—</strong><small>View state-to-device activity</small></button>
       <div class="summary-stat"><div class="stat-label">Open support tickets<i class="bi bi-chat-square-text"></i></div><strong id="summaryTickets">—</strong><small>Sample unresolved complaints</small></div>
@@ -4922,5 +4923,6 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 <script src="js/india-district-map-data.js?v=20261014-district"></script>
 <script src="js/national-prototype.js?v=20261014-district"></script>
 <script src="js/compact-filters.js"></script>
+<script src="js/performance-rankings.js?v=20261014-rankings"></script>
 </body>
 </html>
