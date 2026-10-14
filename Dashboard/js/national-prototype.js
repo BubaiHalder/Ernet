@@ -18,7 +18,7 @@ const nationalBaseSchools = window.KGBV_SCHOOLS.map(school=>{
     const n=Math.abs(hashStr(school.id+'-'+index));
     return {serial:'DEMO-'+school.id.toUpperCase()+'-'+String(index).padStart(2,'0'),status:n%10<8?'Active':'Inactive',usageHours:Number((2+n%50/10).toFixed(1)),openTickets:index===1 && seed%3===0?1:0,resolvedTickets:index===1?seed%4:0,onTime:'09:00 AM',offTime:'03:00 PM',makeModel:'K-Yan teaching device',proc:'Quad-core',ramStorage:'8 GB / 64 GB',os:'Android',fw:'Demo 1.0',net:'Demo network',instDate:'Demo',war:'Demo'};
   });
-  return {...school,name:school.name,zone:school.block,rec:{state:school.state,zone:school.block,schoolId:school.id,udise:school.udise,ifpTotal:2,opsTotal:2,ifpActive:devices.filter(d=>d.status==='Active').length,opsActive:devices.filter(d=>d.status==='Active').length,cmpResolved:seed%4,cmpUnresolved:seed%3===0?1:0,baseHrs:devices.reduce((sum,d)=>sum+d.usageHours,0)/2,devices}};
+  return {...school,district:coverageDistrictName(school.state,school.district),name:school.name,zone:school.block,rec:{state:school.state,zone:school.block,schoolId:school.id,udise:school.udise,ifpTotal:2,opsTotal:2,ifpActive:devices.filter(d=>d.status==='Active').length,opsActive:devices.filter(d=>d.status==='Active').length,cmpResolved:seed%4,cmpUnresolved:seed%3===0?1:0,baseHrs:devices.reduce((sum,d)=>sum+d.usageHours,0)/2,devices}};
 });
 function nationalScope() {
   const search=DOM.schId.value.trim().toLowerCase();
@@ -255,12 +255,11 @@ function nationalDailyDetail(view,scope,ids) {
 }
 function renderNationalTable(view,scope) {
   const ids=nationalTableIds(view);if(!ids)return;
-  if(view==='view-overview')renderCoverageMap(scope);
   const title=view==='view-device'?document.getElementById('deviceWorkflowTitle'):null;
-  if(nationalPath.device){if(title)title.textContent='Daily device usage';nationalDailyDetail(view,scope,ids);document.querySelectorAll('[data-national-level]').forEach(el=>el.textContent=currentView==='view-complaints'?'Device ticket history':'Date-wise usage');return;}
+  if(nationalPath.device){if(view==='view-overview')renderCoverageMap(scope);if(title)title.textContent='Daily device usage';nationalDailyDetail(view,scope,ids);document.querySelectorAll('[data-national-level]').forEach(el=>el.textContent=currentView==='view-complaints'?'Device ticket history':'Date-wise usage');return;}
   let rows=nationalHierarchyRows(scope);if(view==='view-overview')rows=rows.filter(row=>row.kind!=='pending');
   if(view==='view-app'){const query=(document.getElementById('appSearchInput')?.value||'').toLowerCase().trim();if(query)rows=rows.filter(row=>[row.label,row.items[0]?.state,row.items[0]?.udise].some(value=>String(value||'').toLowerCase().includes(query)));}
-  nationalRows[view]=rows;
+  nationalRows[view]=rows;if(view==='view-overview')renderCoverageMap(scope);
   const level=nationalLevel(),name={state:'State',district:'District',block:'Block',school:'School',device:'Device serial number'}[level];
   if(title)title.textContent=level==='device'?'School devices':'Device usage by '+name.toLowerCase();
   const showSchools=['state','district','block'].includes(level),isCoverage=view==='view-overview';
@@ -317,9 +316,44 @@ function coverageTabKey(event,view) {
 function coverageSchoolCount(row) {
   return row.kind==='state'?nationalTargetCount([row.key],row.items):row.items.length;
 }
+function coverageDistrictName(state,name) {
+  const normalized=String(name).toLowerCase().replace(/district/g,'').replace(/[^a-z0-9]/g,'');
+  const aliases={'Andhra Pradesh':{ananthapur:'anantapuram',asr:'allurisitharamaraju',spsnellore:'sripottisriramulunellore',satyasai:'srisathyasai',vizainagaram:'vizianagaram',ysr:'ysrkadapa'},'Arunachal Pradesh':{pakkekesang:'pakkekessang'},'Assam':{morigaon:'marigaon',southsalmara:'southsalmaramankachar'},'Chhattisgarh':{baster:'bastar',gariyaband:'gariaband',kanker:'uttarbastarkanker',mcb:'manendragarhchirimiribharatpur'},'Gujarat':{chhotaudepur:'chhotaudaipur'},'Jharkhand':{hazaribag:'hazaribagh',koderma:'kodarma',pashchimisinghbhum:'westsinghbhum',saraikelakharsawan:'seraikelakharsawan'},'Karnataka':{vijayanagar:'vijayanagara',yadgiri:'yadgir'},'Telangana':{jayashankar:'jayashankarbhupalapally',narayanapet:'narayanpet',rajannasiricilla:'rajannasircilla'},'Uttar Pradesh':{badun:'badaun',bhaghpat:'baghpat',bulandshar:'bulandshahr',raibareli:'raebareli'}};
+  const target=aliases[state]?.[normalized]||normalized;
+  const feature=(window.KGBV_MAP_DISTRICTS||[]).find(f=>f.state===state&&f.name.toLowerCase().replace(/district/g,'').replace(/[^a-z0-9]/g,'')===target);
+  return feature?feature.name.replace(/ district/ig,'').trim():name;
+}
+function coverageDrill(index) {
+  if(currentView!=='view-overview')switchTab('view-overview');
+  nationalDrill(index);
+}
 function coverageMapDrill(state) {
   const index=(nationalRows['view-overview']||[]).findIndex(row=>row.kind==='state'&&row.key===state);
-  if(index>=0)nationalDrill(index);
+  if(index>=0)coverageDrill(index);
+}
+function coverageDistrictDrill(index) {coverageDrill(index);}
+function renderCoverageDistricts(scope,rows,level) {
+  if(!nationalPath.state||level==='state')return;
+  const features=(window.KGBV_MAP_DISTRICTS||[]).filter(f=>f.state===nationalPath.state);
+  const selected=features.find(f=>coverageDistrictName(f.state,f.name)===nationalPath.district);
+  const shown=selected&&level!=='district'?[selected]:features;
+  if(!shown.length)return;
+  const bounds=[Math.min(...shown.map(f=>f.bounds[0])),Math.min(...shown.map(f=>f.bounds[1])),Math.max(...shown.map(f=>f.bounds[2])),Math.max(...shown.map(f=>f.bounds[3]))];
+  const viewBox=[bounds[0]-8,bounds[1]-8,bounds[2]-bounds[0]+16,bounds[3]-bounds[1]+16].join(' '),labels=[];
+  const paths=shown.map(feature=>{
+    const name=coverageDistrictName(feature.state,feature.name),index=rows.findIndex(row=>row.kind==='district'&&row.items[0]?.district===name);
+    const items=scope.filter(s=>s.district===name),count=items.length,enabled=level==='district'&&index>=0;
+    const fill=count>10?'coverage-map-high':count?'coverage-map-medium':'coverage-map-inactive';
+    const label=name+' — '+count+' programme schools';
+    if(count){const x=(feature.bounds[0]+feature.bounds[2])/2,y=(feature.bounds[1]+feature.bounds[3])/2;labels.push('<text class="coverage-district-label" x="'+x+'" y="'+y+'" text-anchor="middle">'+count+'</text>');}
+    return '<path class="coverage-state '+fill+'" d="'+feature.path+'" '+(enabled?'role="button" tabindex="0" onclick="coverageDistrictDrill('+index+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();coverageDistrictDrill('+index+')}"':'')+' aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title></path>';
+  }).join('');
+  let html='<svg class="coverage-india-svg" viewBox="'+viewBox+'" aria-label="District-wise programme schools in '+escapeHtml(nationalPath.state)+'"><title>'+escapeHtml(nationalPath.district||nationalPath.state)+' programme schools</title>'+paths+labels.join('')+'</svg>';
+  if(level!=='district'&&!nationalPath.device)html+='<div class="coverage-map-children">'+rows.map((row,index)=>'<button type="button" onclick="coverageDrill('+index+')"><strong>'+escapeHtml(row.label)+'</strong><span>'+ (row.kind==='device'?'1 teaching device':row.kind==='school'?nationalMetrics(row.items).devices+' teaching devices':coverageSchoolCount(row)+' programme schools')+' <i class="bi bi-chevron-right" aria-hidden="true"></i></span></button>').join('')+'</div>';
+  document.getElementById('coverageMap').innerHTML=html;
+  document.getElementById('coverageMapTitle').textContent=(nationalPath.district||nationalPath.state)+' · '+(level==='district'?'District coverage':'Coverage');
+  document.getElementById('coverageMapLegend').innerHTML='<span><i class="coverage-key medium"></i>1–10 schools</span><span><i class="coverage-key high"></i>11+ schools</span><span><i class="coverage-key inactive"></i>No schools in current scope</span>';
+  document.getElementById('coverageMapNote').textContent=level==='district'?'Select a district on the map or in the breakdown to view its blocks. Map numbers show programme schools.':'Select a block, school or device below the map or in the breakdown to continue.';
 }
 function renderCoverageMap(scope) {
   const keys=['state','district','block','school','device'];
@@ -352,6 +386,7 @@ function renderCoverageMap(scope) {
   const isDevice=level==='device',isSchool=level==='school';
   document.getElementById('coverageChartTitle').textContent=nationalPath.device?'Daily device usage':(isDevice||isSchool?'Teaching devices':'Programme schools')+' by '+names[level];
   document.getElementById('coverageMapNote').textContent=nationalPath.device?'Usage hours per day · Dummy data':level==='state'?'Select a state on the map or a bar to view its districts.':'Select a bar to continue the drilldown. The map shows the selected state; district, block and school locations are represented in the breakdown.';
+  renderCoverageDistricts(scope,rows,level);
   const chart=document.getElementById('coverageChart');
   if(nationalPath.device){
     const device=scope[0]?.rec.devices[0],days=device?nationalDailyData(device):[],max=Math.max(1,...days.map(day=>day.minutes));
@@ -361,6 +396,6 @@ function renderCoverageMap(scope) {
   chart.innerHTML=rows.length?rows.map((row,index)=>{
     const count=values[index],districts=new Set(row.items.map(s=>s.district)).size,blocks=new Set(row.items.map(s=>s.district+'|'+s.block)).size;
     const subtitle=row.kind==='state'?districts+' districts · '+blocks+' blocks':row.kind==='district'?blocks+' blocks':row.kind==='school'?'UDISE: '+(row.items[0]?.udise||'Not provided'):row.kind==='device'?'Dummy serial number':'Programme schools';
-    return '<button type="button" class="coverage-bar-row" onclick="nationalDrill('+index+')"><span class="coverage-bar-label">'+escapeHtml(row.label)+'<small>'+escapeHtml(subtitle)+'</small></span><span class="coverage-bar-track"><span style="width:'+count/max*100+'%"></span></span><strong>'+count+'</strong><i class="bi bi-chevron-right" aria-hidden="true"></i></button>';
+    return '<button type="button" class="coverage-bar-row" onclick="coverageDrill('+index+')"><span class="coverage-bar-label">'+escapeHtml(row.label)+'<small>'+escapeHtml(subtitle)+'</small></span><span class="coverage-bar-track"><span style="width:'+count/max*100+'%"></span></span><strong>'+count+'</strong><i class="bi bi-chevron-right" aria-hidden="true"></i></button>';
   }).join(''):'<p class="coverage-map-note">No records match these filters.</p>';
 }

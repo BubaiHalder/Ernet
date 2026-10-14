@@ -47,3 +47,5 @@ Pradesh, shown as part of India).
 By using this package you accept that the boundary depiction is provided “as is”,
 for general-purpose visualisation only, with no warranty as to accuracy or
 official status.
+
+District map update, 14 October 2026: js/india-district-map-data.js contains SVG-projected district geometry for the 13 programme states, derived from vardhan-maps 0.19.0 low-resolution district datasets (405 district shapes). Geometry is offered under ODbL 1.0. Original package: https://www.npmjs.com/package/vardhan-maps . Directory name variants are reconciled in prototype code; the original school workbook remains unchanged.
