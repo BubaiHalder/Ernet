@@ -55,6 +55,7 @@ html[data-theme] body.professional-dashboard .btn-reset { background:var(--surfa
 .summary-stat strong { display:block; font-size:30px; font-weight:650; letter-spacing:-.05em; margin:10px 0 3px; font-variant-numeric:tabular-nums; }
 .summary-stat small { display:block; color:var(--muted); font-size:10px; }
 .overview-summary { margin:0 0 24px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:20px; border:1px solid var(--line); border-left:3px solid var(--cyan); background:var(--surface); border-radius:6px; }
+#kpiRow + .overview-summary { margin-top:24px; }
 .overview-summary strong { display:block; font-size:12px; font-weight:600; }
 .overview-summary p { font-size:11px; color:var(--muted); margin:4px 0 0; }
 .overview-summary button { flex-shrink:0; font-size:11px; color:var(--cyan); background:transparent; border:0; }

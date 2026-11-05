@@ -218,11 +218,10 @@ table.data-table td {
     <div class="summary-strip national-summary-strip" aria-label="Selected scope summary">
       <button type="button" class="summary-stat summary-action-card" onclick="nationalShowStates()"><div class="stat-label">States in this view<i class="bi bi-map"></i></div><strong id="summaryStates">—</strong><small>View state-wise school metrics</small></button>
       <button type="button" class="summary-stat summary-action-card" onclick="openSchoolRankings()" aria-label="Open Performance Overview and School Rankings"><div class="stat-label">Schools in this view<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>View performance and school rankings</small></button>
-      <div class="summary-stat"><div class="stat-label">Teaching devices<i class="bi bi-display"></i></div><strong id="summaryDevices">—</strong><small>Dummy devices for available school records</small></div>
+      <button type="button" class="summary-stat summary-action-card" onclick="switchTab('view-device')" aria-label="Open teaching device monitoring"><div class="stat-label">Teaching devices<i class="bi bi-display"></i></div><strong id="summaryDevices">—</strong><small>View teaching devices in this scope</small></button>
       <button type="button" class="summary-stat summary-action-card" onclick="switchTab('view-device')"><div class="stat-label">Device activity<i class="bi bi-activity"></i></div><strong id="summaryActivity">—</strong><small>View state-to-device activity</small></button>
-      <div class="summary-stat"><div class="stat-label">Open support tickets<i class="bi bi-chat-square-text"></i></div><strong id="summaryTickets">—</strong><small>Sample unresolved complaints</small></div>
+      <button type="button" class="summary-stat summary-action-card" onclick="openSupportTicketExplorer()" aria-label="Search open support tickets"><div class="stat-label">Open support tickets<i class="bi bi-chat-square-text"></i></div><strong id="summaryTickets">—</strong><small>Search tickets by ID or school</small></button>
     </div>
-    <div class="overview-summary"><div><strong>From classroom activity to programme insight</strong><p>Track school usage, learning adoption, and device health across the programme.</p></div><button type="button" onclick="switchTab('view-device')">View device monitoring <i class="bi bi-arrow-right ms-1"></i></button></div>
 
     <div class="d-flex align-items-center justify-content-between mt-2 mb-3 flex-wrap gap-2">
       <div>
@@ -230,6 +229,7 @@ table.data-table td {
         <p class="section-sub mb-0" id="overviewSub">Showing metrics</p>
       </div>
     </div>
+
 
     <!-- KPI cards -->
     <div class="row g-2" id="kpiRow">
@@ -360,6 +360,8 @@ table.data-table td {
       </div>
     </div>
 
+    <div class="overview-summary"><div><strong>From classroom activity to programme insight</strong><p>Track school usage, learning adoption, and device health across the programme.</p></div><button type="button" onclick="switchTab('view-device')">View device monitoring <i class="bi bi-arrow-right ms-1"></i></button></div>
+
 <div id="overviewGeographyCard" class="card-surface national-geography-card">
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
     <div><h2 class="section-title">Programme coverage</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div>
@@ -375,7 +377,7 @@ table.data-table td {
     <div class="coverage-graph-layout"><div class="coverage-map-panel"><div class="coverage-map-heading"><h3 id="coverageMapTitle">India programme coverage</h3><span>Click a state to explore</span></div><div id="coverageMap" class="coverage-india-map"></div><div id="coverageMapLegend" class="coverage-map-legend"></div><small class="coverage-map-credit">Map: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> · <a href="https://github.com/Vardhan-Systems/vardhan-maps" target="_blank" rel="noopener">Vardhan Maps</a></small></div><div class="coverage-chart-panel"><h3 id="coverageChartTitle">Programme schools by state</h3><p id="coverageMapNote" class="coverage-map-note"></p><div id="coverageChart" class="coverage-bar-chart"></div></div></div>
   </section>
 </div>
-<div class="card-surface" id="nationalPerformanceCard"><div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"><div><h2 id="nationalPerformanceTitle" class="section-title">Programme utilisation</h2><p id="nationalPerformanceSubtitle" class="section-sub mt-1">Compare usage across the selected scope.</p></div><div class="d-flex flex-wrap gap-2"><label class="visually-hidden" for="performanceLevelSelect">Compare by</label><select id="performanceLevelSelect" class="form-select" style="width:140px" onchange="nationalPerformanceChoice=this.value;nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"></select><label class="visually-hidden" for="performanceSort">Sort utilisation</label><select id="performanceSort" class="form-select" style="width:175px" onchange="nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"><option value="low">Low usage first</option><option value="high">High usage first</option><option value="name">Name A–Z</option></select></div></div><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><label class="visually-hidden" for="performanceSearch">Search utilisation</label><input id="performanceSearch" type="search" class="form-control" placeholder="Search a state, district, block, or school" style="max-width:340px" oninput="nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"><small class="text-muted">Usage per device, rather than total volume</small></div><div class="table-responsive"><table class="data-table w-100"><thead id="performanceThead"></thead><tbody id="performanceTbody"></tbody></table></div><div class="d-flex justify-content-between align-items-center gap-2 mt-3"><small id="performanceEntries" class="text-muted"></small><div class="d-flex gap-2"><button id="performancePrevious" class="heading-action" type="button" onclick="changeNationalPerformancePage(-1)">Previous</button><button id="performanceNext" class="heading-action" type="button" onclick="changeNationalPerformancePage(1)">Next</button></div></div></div>
+<div class="card-surface" id="nationalPerformanceCard" hidden><div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3"><div><h2 id="nationalPerformanceTitle" class="section-title">Programme utilisation</h2><p id="nationalPerformanceSubtitle" class="section-sub mt-1">Compare usage across the selected scope.</p></div><div class="d-flex flex-wrap gap-2"><label class="visually-hidden" for="performanceLevelSelect">Compare by</label><select id="performanceLevelSelect" class="form-select" style="width:140px" onchange="nationalPerformanceChoice=this.value;nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"></select><label class="visually-hidden" for="performanceSort">Sort utilisation</label><select id="performanceSort" class="form-select" style="width:175px" onchange="nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"><option value="low">Low usage first</option><option value="high">High usage first</option><option value="name">Name A–Z</option></select></div></div><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><label class="visually-hidden" for="performanceSearch">Search utilisation</label><input id="performanceSearch" type="search" class="form-control" placeholder="Search a state, district, block, or school" style="max-width:340px" oninput="nationalPerformancePageNumber=1;renderNationalPerformance(nationalScope())"><small class="text-muted">Usage per device, rather than total volume</small></div><div class="table-responsive"><table class="data-table w-100"><thead id="performanceThead"></thead><tbody id="performanceTbody"></tbody></table></div><div class="d-flex justify-content-between align-items-center gap-2 mt-3"><small id="performanceEntries" class="text-muted"></small><div class="d-flex gap-2"><button id="performancePrevious" class="heading-action" type="button" onclick="changeNationalPerformancePage(-1)">Previous</button><button id="performanceNext" class="heading-action" type="button" onclick="changeNationalPerformancePage(1)">Next</button></div></div></div>
   </div>
 
   <!-- VIEW: DEVICE (School-wise, Block-wise, District-wise drilldown) -->
@@ -4934,5 +4936,8 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 <script src="js/performance-rankings.js?v=20261014-rankings"></script>
 <script src="js/content-analytics.js?v=20261014-content-back"></script>
 <script src="js/workspace-shell.js?v=20261014-phone"></script>
+<script src="js/observation-updates.js?v=20261104-3"></script>
+<script src="js/navigation-updates.js?v=20261104-3"></script>
+<script src="js/training-card.js?v=20261104-2"></script>
 </body>
 </html>

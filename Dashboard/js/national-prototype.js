@@ -114,7 +114,7 @@ render = function () {
   const target=nationalTargetCount(states,scope);
   document.getElementById('nationalDataNote').textContent=nationalPath.school?'Device and usage figures for this school are dummy data.':'School details available: '+scope.length+' of '+target+'. Device and usage figures are dummy data.';
   renderNationalTable(currentView,scope);
-  if(currentView==='view-overview'){nationalRenderOverview(scope,metrics);document.getElementById('nationalPerformanceCard').hidden=Boolean(nationalPath.device);if(!nationalPath.device)renderNationalPerformance(scope);}
+  if(currentView==='view-overview'){nationalRenderOverview(scope,metrics);document.getElementById('nationalPerformanceCard').hidden=true;}
   if(currentView==='view-device') {
     renderMdmSummary(scope);
     document.getElementById('mdmDeviceDetail').hidden=!nationalPath.school;
