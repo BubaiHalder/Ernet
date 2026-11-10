@@ -1,4 +1,4 @@
-﻿/* Direct date controls and ticket search for the static dashboard demonstration. */
+/* Direct date controls and ticket search for the static dashboard demonstration. */
 'use strict';
 (() => {
   const style = document.createElement('style');
@@ -131,14 +131,212 @@
     setUsagePeriod = function (days) { setPeriod(days); syncDateControls(); };
   }
 
-  const explorer = document.createElement('section');
-  explorer.className = 'card-surface ticket-explorer';
-  explorer.innerHTML = '<div class="ticket-explorer-head"><div><h3>Ticket search</h3><p>Search the selected schools and date range. Sample ticket records are demonstrative.</p></div><div class="ticket-explorer-controls"><label class="visually-hidden" for="ticketExplorerSearch">Search ticket ID or school</label><input id="ticketExplorerSearch" class="form-control" type="search" placeholder="Search ticket ID, school, UDISE, or location"><label class="visually-hidden" for="ticketExplorerStatus">Filter by ticket status</label><select id="ticketExplorerStatus" class="form-select"><option value="all">All statuses</option><option value="open">Open</option><option value="resolved">Resolved</option></select></div></div><div id="ticketExplorerVisuals"></div><p id="ticketExplorerCount" class="ticket-explorer-count" aria-live="polite"></p><div class="ticket-explorer-table"><table class="data-table w-100"><thead><tr><th>Ticket ID</th><th>School</th><th>State / District</th><th>Issue</th><th>Device</th><th>Logged</th><th>Status</th></tr></thead><tbody id="ticketExplorerBody"></tbody></table></div><div class="school-pagination ticket-explorer-pagination"><label>Rows per page <select id="ticketExplorerPageSize"><option>10</option><option>25</option><option>50</option></select></label><span id="ticketExplorerPageInfo"></span><button type="button" id="ticketExplorerPrevPage">Previous</button><button type="button" id="ticketExplorerNextPage">Next</button></div>';
-  const complaintView = document.getElementById('view-complaints');
-  if (complaintView) complaintView.insertBefore(explorer, complaintView.firstChild);
+  const ticketDetailsData = [
+    {
+      num: 1,
+      ticket: 'DL000796',
+      incidentType: "Display Issue - No light in Screen and it's not work",
+      loggedOn: '2026-11-05 11:38:51',
+      closedOn: '2026-11-06 16:17:15',
+      slaDays: '0 Days',
+      slaCost: '₹0',
+      udiseCode: '7020100705',
+      schoolName: 'SKV BURARI',
+      deviceType: 'K-Yan',
+      deviceId: '602PMEM023348',
+      engineerAssigned: 'SNET',
+      team: 'Customer Care',
+      partner: 'LG',
+      serviceCategory: 'K-Yan - 75TR3DK-i',
+      project: 'Smart_Classroom_1405_Delhi',
+      zoneName: 'Delhi',
+      closureReport: 'Report PDF'
+    },
+    {
+      num: 2,
+      ticket: 'DL000795',
+      incidentType: 'Speaker Issue - Sound is distorted and not audible',
+      loggedOn: '2026-11-05 11:35:53',
+      closedOn: '2026-11-06 16:17:10',
+      slaDays: '0 Days',
+      slaCost: '₹0',
+      udiseCode: '7020100705',
+      schoolName: 'SKV BURARI',
+      deviceType: 'K-Yan',
+      deviceId: '602PMND023663',
+      engineerAssigned: 'SNET',
+      team: 'Customer Care',
+      partner: 'LG',
+      serviceCategory: 'K-Yan - 75TR3DK-i',
+      project: 'Smart_Classroom_1405_Delhi',
+      zoneName: 'Delhi',
+      closureReport: 'Report PDF'
+    },
+    {
+      num: 3,
+      ticket: 'DL000794',
+      incidentType: 'App Issue - Not working properly,<br> PC is not opening at all and android is working some time, problem in YouTube.',
+      loggedOn: '2026-11-05 11:31:12',
+      closedOn: '2026-11-06 16:17:05',
+      slaDays: '0 Days',
+      slaCost: '₹0',
+      udiseCode: '7020100705',
+      schoolName: 'SKV BURARI',
+      deviceType: 'K-Yan',
+      deviceId: '602PMZR024085',
+      engineerAssigned: 'SNET',
+      team: 'Customer Care',
+      partner: 'LG',
+      serviceCategory: 'K-Yan - 75TR3DK-i',
+      project: 'Smart_Classroom_1405_Delhi',
+      zoneName: 'Delhi',
+      closureReport: 'Report PDF'
+    },
+    {
+      num: 4,
+      ticket: 'DL000791',
+      incidentType: 'Hinges loose or damaged - Cabinet is loose',
+      loggedOn: '2026-11-02 14:23:19',
+      closedOn: '2026-11-03 12:07:34',
+      slaDays: '0 Days',
+      slaCost: '₹0',
+      udiseCode: '7010104501',
+      schoolName: 'CM SHRI SCHOOL SECTOR-02 ROHINI',
+      deviceType: 'K-Yan',
+      deviceId: 'CBNTSCR2026204',
+      engineerAssigned: 'SNET',
+      team: 'Customer Care',
+      partner: 'Cabinet',
+      serviceCategory: 'K-Yan',
+      project: 'Smart_Classroom_1405_Delhi',
+      zoneName: 'Delhi',
+      closureReport: 'Report PDF'
+    },
+    {
+      num: 5,
+      ticket: 'DL000790',
+      incidentType: 'Other - UPS is not working',
+      loggedOn: '2026-11-02 14:20:59',
+      closedOn: '2026-11-03 12:10:45',
+      slaDays: '0 Days',
+      slaCost: '₹0',
+      udiseCode: '7010104501',
+      schoolName: 'CM SHRI SCHOOL SECTOR-02 ROHINI',
+      deviceType: 'UPS',
+      deviceId: 'M0316K2503699',
+      engineerAssigned: 'SNET',
+      team: 'Customer Care',
+      partner: 'BPE',
+      serviceCategory: 'BP1000',
+      project: 'Smart_Classroom_1405_Delhi',
+      zoneName: 'Delhi',
+      closureReport: 'Report PDF'
+    },
+    {
+      num: 6,
+      ticket: 'DL000789',
+      incidentType: 'OS Issue - OPS Windows not working',
+      loggedOn: '2026-11-02 14:15:43',
+      closedOn: '2026-11-03 12:10:18',
+      slaDays: '0 Days',
+      slaCost: '₹0',
+      udiseCode: '7010104501',
+      schoolName: 'CM SHRI SCHOOL SECTOR-02 ROHINI',
+      deviceType: 'K-Yan',
+      deviceId: 'XVX260812194',
+      engineerAssigned: 'SNET',
+      team: 'Customer Care',
+      partner: 'View Sonic',
+      serviceCategory: 'OPS- VS19531',
+      project: 'Smart_Classroom_1405_Delhi',
+      zoneName: 'Delhi',
+      closureReport: 'Report PDF'
+    }
+  ];
+
+  window.renderTicketDetailsTable = function () {
+    const tbody = document.getElementById('ticketDetailBody');
+    if (!tbody) return;
+
+    const query = (document.getElementById('ticketDetailSearchInput')?.value || '').toLowerCase().trim();
+    const limit = parseInt(document.getElementById('ticketDetailEntriesSelect')?.value || '10', 10);
+
+    let rows = ticketDetailsData;
+    if (query) {
+      rows = rows.filter(r => [
+        r.ticket, r.incidentType, r.udiseCode, r.schoolName, r.deviceType,
+        r.deviceId, r.engineerAssigned, r.partner, r.serviceCategory, r.project, r.zoneName
+      ].some(val => String(val).toLowerCase().includes(query)));
+    }
+
+    const total = rows.length;
+    const paginated = rows.slice(0, limit);
+
+    const deviceBadge = type => {
+      if (type === 'K-Yan' || type === 'k-yan' || type === 'K-YAN' || type === 'IFP' || type === 'Cabinet' || type === 'OPS') {
+        return '<span class="badge d-inline-flex align-items-center gap-1" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; font-weight:600; padding:3px 7px; border-radius:6px; font-size:11px;"><i class="bi bi-display"></i> K-Yan</span>';
+      }
+      if (type === 'UPS') {
+        return '<span class="badge d-inline-flex align-items-center gap-1" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:600; padding:3px 7px; border-radius:6px; font-size:11px;"><i class="bi bi-gear"></i> UPS</span>';
+      }
+      return type;
+    };
+
+    tbody.innerHTML = paginated.length ? paginated.map(r => `
+      <tr style="border-bottom:1px solid var(--line);">
+        <td style="padding:10px 12px; text-align:center; font-weight:600; color:var(--muted); font-size:11.5px;">${r.num}</td>
+        <td style="padding:10px 12px; font-weight:700; color:var(--ink); white-space:nowrap; font-size:12px;">${r.ticket}</td>
+        <td style="padding:10px 12px;">
+          <span class="badge text-start text-wrap" style="background:#f8fafc; color:#334155; border:1px solid #cbd5e1; font-weight:500; font-size:11px; padding:4px 9px; border-radius:12px; line-height:1.45; max-width:400px; display:inline-block;">${r.incidentType}</span>
+        </td>
+        <td style="padding:10px 12px; white-space:nowrap; font-weight:500; font-family:monospace; font-size:11.5px; color:var(--ink);">${r.loggedOn}</td>
+        <td style="padding:10px 12px; white-space:nowrap; font-weight:500; font-family:monospace; font-size:11.5px; color:var(--ink);">${r.closedOn}</td>
+        <td style="padding:10px 12px; font-weight:700; white-space:nowrap; color:var(--ink); font-size:12px;"><strong>0</strong> Days</td>
+        <td style="padding:10px 12px; font-weight:600; white-space:nowrap; color:var(--ink); font-size:12px;">${r.slaCost}</td>
+        <td style="padding:10px 12px; font-weight:700; white-space:nowrap; color:var(--ink); font-family:monospace; font-size:12px;">${r.udiseCode}</td>
+        <td style="padding:10px 12px; font-weight:700; color:var(--ink); font-size:11.5px; white-space:nowrap;">${r.schoolName}</td>
+        <td style="padding:10px 12px; white-space:nowrap;">${deviceBadge(r.deviceType)}</td>
+        <td style="padding:10px 12px; font-weight:700; font-family:monospace; font-size:11.5px; white-space:nowrap; color:var(--ink);">${r.deviceId}</td>
+        <td style="padding:10px 12px; font-weight:600; color:var(--muted); font-size:11.5px; white-space:nowrap;">${r.engineerAssigned}</td>
+        <td style="padding:10px 12px; white-space:nowrap;">
+          <span class="badge" style="background:#f8fafc; color:#334155; border:1px solid #cbd5e1; font-weight:500; padding:3px 9px; border-radius:12px; font-size:11px;">${r.team}</span>
+        </td>
+        <td style="padding:10px 12px; font-weight:600; font-size:11.5px; color:var(--ink); white-space:nowrap;">${r.partner}</td>
+        <td style="padding:10px 12px; white-space:nowrap;">
+          <span class="badge" style="background:#f8fafc; color:#334155; border:1px solid #cbd5e1; font-weight:500; padding:3px 8px; border-radius:6px; font-size:11px;">${r.serviceCategory}</span>
+        </td>
+        <td style="padding:10px 12px; white-space:nowrap;">
+          <span class="badge" style="background:#dbeafe; color:#1d4ed8; font-weight:600; padding:3px 9px; border-radius:12px; font-size:11px;">${r.project}</span>
+        </td>
+        <td style="padding:10px 12px; font-weight:700; color:var(--ink); white-space:nowrap; font-size:12px;">${r.zoneName}</td>
+        <td style="padding:10px 12px; text-align:center; white-space:nowrap;">
+          <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" style="font-size:11px; padding:2px 8px; border-radius:6px; border-color:#cbd5e1; color:#475569; background:#fff;" onclick="exportSingleClosureReport('${r.ticket}')">
+            <i class="bi bi-file-earmark-pdf"></i> Report PDF
+          </button>
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="18" class="text-center py-4 text-muted">No tickets match this filter.</td></tr>';
+
+    const info = document.getElementById('ticketDetailEntriesInfo');
+    if (info) {
+      info.textContent = total ? `Showing 1 to ${Math.min(limit, total)} of ${total} entries` : '0 entries';
+    }
+  };
+
+  window.exportTicketDetailsTable = function (format) {
+    if (typeof exportTableReport === 'function') {
+      exportTableReport('ticketDetailTable', format, 'Support tickets details');
+    }
+  };
+
+  window.exportSingleClosureReport = function (ticketId) {
+    if (typeof exportTableReport === 'function') {
+      exportTableReport('ticketDetailTable', 'pdf', 'Closure Report - ' + ticketId);
+    }
+  };
 
   const issueNames = ['Display or stylus issue', 'System startup issue', 'Classroom network issue', 'Audio issue', 'Learning content sync issue'];
-  let ticketRows = [], ticketPage = 1, ticketPageSize = 10;
+  let ticketRows = [];
   function buildTickets() {
     const schools = typeof nationalScope === 'function' ? nationalScope() : [];
     const today = new Date();
@@ -150,57 +348,147 @@
         const date = new Date(today);
         date.setDate(date.getDate() - (status === 'open' ? 0 : ticketSeed % 90));
         const logged = localDateString(date);
-        if (logged < DOM.fDate.value || logged > DOM.tDate.value) return;
-        const device = school.rec.devices[index % school.rec.devices.length] || { serial: 'Demo device' };
+        if (typeof DOM !== 'undefined' && DOM.fDate && DOM.tDate && (logged < DOM.fDate.value || logged > DOM.tDate.value)) return;
+        const device = (school.rec && school.rec.devices && school.rec.devices[index % school.rec.devices.length]) || { serial: 'Demo device' };
         ticketRows.push({
           id: 'TK-' + ((status === 'open' ? 7000 : 4000) + (ticketSeed % 2900)),
           status, school: school.name, schoolId: school.id, state: school.state, district: school.district,
           issue: issueNames[ticketSeed % issueNames.length], device: device.serial, logged, seed: ticketSeed
         });
       };
-      for (let i = 0; i < (school.rec.cmpUnresolved || 0); i++) addTicket('open', i);
-      for (let i = 0; i < (school.rec.cmpResolved || 0); i++) addTicket('resolved', i);
+      for (let i = 0; i < ((school.rec && school.rec.cmpUnresolved) || 0); i++) addTicket('open', i);
+      for (let i = 0; i < ((school.rec && school.rec.cmpResolved) || 0); i++) addTicket('resolved', i);
     });
     ticketRows.sort((a, b) => (a.status === b.status ? b.logged.localeCompare(a.logged) : a.status === 'open' ? -1 : 1) || a.id.localeCompare(b.id));
   }
-  window.toggleTicketDetails = function (id) {
-    const row = document.querySelector('[data-ticket-detail="' + CSS.escape(id) + '"]');
-    if (row) { row.hidden = !row.hidden; const button = document.querySelector('[data-ticket-toggle="' + CSS.escape(id) + '"]'); if (button) button.setAttribute('aria-expanded', String(!row.hidden)); }
-  };
+
+  let ticketPage = 1;
+  let ticketPageSize = 10;
+
   function renderTicketExplorer() {
-    const body = document.getElementById('ticketExplorerBody');
-    if (!body || typeof DOM === 'undefined' || !DOM.fDate || typeof nationalBaseSchools === 'undefined') return;
+    const visuals = document.getElementById('ticketExplorerVisuals');
+    if (!visuals) return;
     buildTickets();
-    const query = document.getElementById('ticketExplorerSearch').value.trim().toLowerCase();
-    const status = document.getElementById('ticketExplorerStatus').value;
+    const searchEl = document.getElementById('ticketExplorerSearch');
+    const statusEl = document.getElementById('ticketExplorerStatus');
+    const query = (searchEl?.value || '').trim().toLowerCase();
+    const status = statusEl?.value || 'all';
     const visible = ticketRows.filter(row => (status === 'all' || row.status === status) && (!query || [row.id, row.school, row.schoolId, row.state, row.district, row.issue, row.device].some(value => value.toLowerCase().includes(query))));
-    ticketPage=Math.min(ticketPage,Math.max(1,Math.ceil(visible.length/ticketPageSize)));
-    const pageRows=visible.slice((ticketPage-1)*ticketPageSize,ticketPage*ticketPageSize);
-    document.getElementById('ticketExplorerCount').textContent = visible.length.toLocaleString('en-IN') + ' ticket' + (visible.length === 1 ? '' : 's') + ' in the selected scope and date range';
-    const openCount=visible.filter(row=>row.status==='open').length,resolvedCount=visible.length-openCount;
-    const issues=new Map();visible.forEach(row=>issues.set(row.issue,(issues.get(row.issue)||0)+1));
-    const issueRows=[...issues.entries()].sort((a,b)=>b[1]-a[1]).slice(0,6),maxIssue=Math.max(1,...issueRows.map(row=>row[1]));
-    document.getElementById('ticketExplorerVisuals').innerHTML='<div class="detail-visual-kpis"><div class="detail-visual-kpi"><span>Tickets shown</span><strong>'+visible.length.toLocaleString('en-IN')+'</strong></div><div class="detail-visual-kpi"><span>Open</span><strong>'+openCount.toLocaleString('en-IN')+'</strong></div><div class="detail-visual-kpi"><span>Resolved</span><strong>'+resolvedCount.toLocaleString('en-IN')+'</strong></div></div><section class="detail-chart-panel"><h3>Tickets by issue</h3><p>Breakdown of the currently visible ticket results.</p><div class="detail-bar-list">'+(issueRows.length?issueRows.map(([label,value])=>'<div class="detail-bar-row"><span class="detail-bar-label" title="'+escapeHtml(label)+'">'+escapeHtml(label)+'</span><span class="detail-bar-track" role="img" aria-label="'+escapeHtml(label+': '+value)+'"><span style="width:'+Math.max(3,value/maxIssue*100)+'%"></span></span><span class="detail-bar-value">'+value+'</span></div>').join(''):'<p class="dashboard-detail-note mb-0">No tickets match this search.</p>')+'</div></section>';
-    body.innerHTML = pageRows.length ? pageRows.map(row => { const detailKey = row.id + '-' + row.schoolId; return '<tr><td><button type="button" class="ticket-id-link" data-ticket-toggle="' + escapeHtml(detailKey) + '" aria-expanded="false" onclick="toggleTicketDetails(\'' + escapeHtml(detailKey) + '\')">' + escapeHtml(row.id) + '</button></td><td>' + escapeHtml(row.school) + '<small class="d-block text-muted">' + escapeHtml(row.schoolId) + '</small></td><td>' + escapeHtml(row.state + ' / ' + row.district) + '</td><td>' + escapeHtml(row.issue) + '</td><td class="font-mono">' + escapeHtml(row.device) + '</td><td>' + escapeHtml(new Date(row.logged + 'T00:00:00').toLocaleDateString('en-IN')) + '</td><td><span class="status-badge ' + (row.status === 'open' ? 'status-inactive' : 'status-active') + '">' + (row.status === 'open' ? 'Open' : 'Resolved') + '</span></td></tr><tr class="ticket-detail-row" data-ticket-detail="' + escapeHtml(detailKey) + '" hidden><td colspan="7"><strong>' + escapeHtml(row.id) + '</strong> · ' + escapeHtml(row.issue) + ' reported for ' + escapeHtml(row.school) + ' (' + escapeHtml(row.schoolId) + '). Device ' + escapeHtml(row.device) + '. ' + (row.status === 'open' ? 'This sample ticket is pending resolution.' : 'This sample ticket is marked resolved.') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="text-center py-4 text-muted">No sample tickets match this search and date range.</td></tr>';
-    document.getElementById('ticketExplorerPageSize').value=String(ticketPageSize);
-    document.getElementById('ticketExplorerPageInfo').textContent=visible.length?((ticketPage-1)*ticketPageSize+1)+'–'+Math.min(ticketPage*ticketPageSize,visible.length)+' of '+visible.length:'0 records';
-    document.getElementById('ticketExplorerPrevPage').disabled=ticketPage<=1;
-    document.getElementById('ticketExplorerNextPage').disabled=ticketPage*ticketPageSize>=visible.length;
+    const openCount = visible.filter(row => row.status === 'open').length;
+    const resolvedCount = visible.length - openCount;
+    const issues = new Map();
+    visible.forEach(row => issues.set(row.issue, (issues.get(row.issue) || 0) + 1));
+    const issueRows = [...issues.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const maxIssue = Math.max(1, ...issueRows.map(row => row[1]));
+
+    const formatTicketDate = str => {
+      if (!str) return '';
+      const p = String(str).split('-');
+      return p.length === 3 ? (p[2] + '/' + p[1] + '/' + p[0]) : str;
+    };
+
+    const isPopup = Boolean(document.getElementById('dashboardDetailDialog')?.contains(visuals) || document.getElementById('dashboardDetailDialog')?.open);
+
+    const total = visible.length;
+    const totalPages = Math.max(1, Math.ceil(total / ticketPageSize));
+    if (ticketPage > totalPages) ticketPage = totalPages;
+    if (ticketPage < 1) ticketPage = 1;
+    const startIdx = (ticketPage - 1) * ticketPageSize;
+    const endIdx = Math.min(startIdx + ticketPageSize, total);
+    const pageRows = visible.slice(startIdx, endIdx);
+
+        let tableHtml = '';
+    if (isPopup) {
+      tableHtml = '<p class="dashboard-detail-note mt-3 mb-2" style="font-size:12.5px; color:var(--muted); font-weight:500;">' + visible.length.toLocaleString('en-IN') + ' tickets in the selected scope and date range</p>';
+    }
+
+    visuals.innerHTML = '<div class="detail-visual-kpis"><div class="detail-visual-kpi"><span>Tickets shown</span><strong id="ticketKpiShown">' + visible.length.toLocaleString('en-IN') + '</strong></div><div class="detail-visual-kpi"><span>Open</span><strong id="ticketKpiOpen">' + openCount.toLocaleString('en-IN') + '</strong></div><div class="detail-visual-kpi"><span>Resolved</span><strong id="ticketKpiResolved">' + resolvedCount.toLocaleString('en-IN') + '</strong></div></div><section class="detail-chart-panel mb-0"><h3>Tickets by issue</h3><p>Breakdown of the currently visible ticket results.</p><div class="detail-bar-list" id="ticketIssueBarList">' + (issueRows.length ? issueRows.map(([label, value]) => '<div class="detail-bar-row"><span class="detail-bar-label" title="' + escapeHtml(label) + '">' + escapeHtml(label) + '</span><span class="detail-bar-track" role="img" aria-label="' + escapeHtml(label + ': ' + value) + '"><span style="width:' + Math.max(3, (value / maxIssue) * 100) + '%"></span></span><span class="detail-bar-value">' + value + '</span></div>').join('') : '<p class="dashboard-detail-note mb-0">No tickets match this search.</p>') + '</div></section>' + tableHtml;
+
+    if (isPopup) {
+      const sizeSel = document.getElementById('ticketPageSize');
+      if (sizeSel) {
+        sizeSel.onchange = e => {
+          ticketPageSize = Number(e.target.value) || 10;
+          ticketPage = 1;
+          renderTicketExplorer();
+        };
+      }
+      const prev = document.getElementById('ticketPrevPage');
+      if (prev) {
+        prev.onclick = () => {
+          if (ticketPage > 1) {
+            ticketPage--;
+            renderTicketExplorer();
+          }
+        };
+      }
+      const next = document.getElementById('ticketNextPage');
+      if (next) {
+        next.onclick = () => {
+          if (ticketPage < totalPages) {
+            ticketPage++;
+            renderTicketExplorer();
+          }
+        };
+      }
+    }
   }
+
   window.renderTicketExplorer = renderTicketExplorer;
-  document.getElementById('ticketExplorerSearch').addEventListener('input',()=>{ticketPage=1;renderTicketExplorer();});
-  document.getElementById('ticketExplorerStatus').addEventListener('change',()=>{ticketPage=1;renderTicketExplorer();});
-  document.getElementById('ticketExplorerPageSize').addEventListener('change',event=>{ticketPageSize=Number(event.target.value);ticketPage=1;renderTicketExplorer();});
-  document.getElementById('ticketExplorerPrevPage').addEventListener('click',()=>{ticketPage--;renderTicketExplorer();});
-  document.getElementById('ticketExplorerNextPage').addEventListener('click',()=>{ticketPage++;renderTicketExplorer();});
+  document.getElementById('ticketExplorerSearch')?.addEventListener('input', () => {
+    ticketPage = 1;
+    renderTicketExplorer();
+  });
+  document.getElementById('ticketExplorerStatus')?.addEventListener('change', () => {
+    ticketPage = 1;
+    renderTicketExplorer();
+  });
 
   const existingRender = render;
-  render = function () { existingRender(); syncDateControls(); renderTicketExplorer(); };
+  render = function () { existingRender(); syncDateControls(); if (typeof renderTicketExplorer === 'function') renderTicketExplorer(); if (typeof renderTicketDetailsTable === 'function') renderTicketDetailsTable(); };
   window.openSupportTicketExplorer = function () {
-    switchTab('view-complaints');
-    document.getElementById('ticketExplorerSearch').focus({ preventScroll: true });
-    explorer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (typeof openDashboardDetail === 'function') {
+      openDashboardDetail('tickets');
+    } else {
+      switchTab('view-complaints');
+    }
   };
   syncDateControls();
-  renderTicketExplorer();
+  if (typeof renderTicketDetailsTable === 'function') renderTicketDetailsTable();
+
+  window.setSupportTicketView = function (view) {
+    const isLocation = (view === 'location');
+    const tabLoc = document.getElementById('supportTabLocation');
+    const tabDet = document.getElementById('supportTabDetails');
+    const panelLoc = document.getElementById('supportLocationPanel');
+    const panelDet = document.getElementById('supportDetailsPanel');
+
+    if (tabLoc) {
+      tabLoc.setAttribute('aria-selected', String(isLocation));
+      tabLoc.tabIndex = isLocation ? 0 : -1;
+    }
+    if (tabDet) {
+      tabDet.setAttribute('aria-selected', String(!isLocation));
+      tabDet.tabIndex = !isLocation ? 0 : -1;
+    }
+    if (panelLoc) panelLoc.hidden = !isLocation;
+    if (panelDet) {
+      panelDet.hidden = isLocation;
+      if (!isLocation && typeof renderTicketDetailsTable === 'function') {
+        renderTicketDetailsTable();
+      }
+    }
+    if (isLocation && typeof renderNationalTable === 'function') {
+      renderNationalTable('view-complaints', typeof nationalScope === 'function' ? nationalScope() : []);
+    }
+  };
+
+  window.supportTabKey = function (event, view) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 'location' : event.key === 'End' ? 'details' : (view === 'location' ? 'details' : 'location');
+    setSupportTicketView(next);
+    const targetTab = document.getElementById(next === 'location' ? 'supportTabLocation' : 'supportTabDetails');
+    if (targetTab) targetTab.focus();
+  };
 })();

@@ -207,8 +207,8 @@ table.data-table td {
 <li class="nav-item"><a class="nav-link" href="#view-device" data-target="view-device"><i class="bi bi-display" aria-hidden="true"></i>Device monitoring</a></li>
 <li class="nav-item"><a class="nav-link" href="#view-app" data-target="view-app"><i class="bi bi-grid" aria-hidden="true"></i>Applications</a></li>
 <li class="nav-item"><a class="nav-link" href="#view-content" data-target="view-content"><i class="bi bi-journal-bookmark" aria-hidden="true"></i>Learning content</a></li>
-<li class="nav-item"><a class="nav-link" href="#view-reports" data-target="view-reports"><i class="bi bi-bar-chart" aria-hidden="true"></i>Reports & analytics</a></li>
 <li class="nav-item" id="complainNavLi"><a class="nav-link" href="#view-complaints" data-target="view-complaints"><i class="bi bi-chat-square-text" aria-hidden="true"></i>Support tickets</a></li>
+<li class="nav-item"><a class="nav-link" href="#view-reports" data-target="view-reports"><i class="bi bi-bar-chart" aria-hidden="true"></i>Reports & analytics</a></li>
 <li class="nav-item"><a class="nav-link" href="#view-audit" data-target="view-audit"><i class="bi bi-clock-history" aria-hidden="true"></i>Activity logs</a></li>
 <li class="sidebar-note"><strong>KGBV digital classrooms</strong>Device activity &amp; learning adoption<br>ERNET India · Client demonstration</li>
 </ul>
@@ -402,16 +402,16 @@ table.data-table td {
 
   <!-- VIEW: APP USAGE -->
   <div id="view-app" class="view-section">
-    <div class="card-surface mt-2 mb-4 p-0" style="overflow: hidden;">
-      <div class="perf-head application-toolbar p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <span class="perf-tag font-display" style="font-size:14px; font-weight:700;">
+    <div class="card-surface mt-2 mb-2 p-0" style="overflow: hidden;">
+      <div class="perf-head application-toolbar px-3 py-2 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <span class="perf-tag font-display" style="font-size:13px; font-weight:700;">
           <i class="bi bi-grid-3x3-gap-fill me-1.5 text-primary"></i>Applications Usage &amp; Analytics Data
         </span>
         <div class="application-toolbar-controls d-flex align-items-center gap-2 flex-wrap">
           <button id="applicationBackButton" type="button" class="heading-action module-back-button" onclick="nationalModuleGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button>
-          <div class="application-row-count d-flex align-items-center gap-1.5" style="font-size:12px; color:var(--muted);">
+          <div class="application-row-count d-flex align-items-center gap-1.5" style="font-size:11.5px; color:var(--muted);">
             <span>Show</span>
-            <select id="appEntriesSelect" aria-label="Number of records" class="form-select form-select-sm" style="width:65px; font-size:12px;" onchange="render()">
+            <select id="appEntriesSelect" aria-label="Number of records" class="form-select form-select-sm" style="width:62px; font-size:11.5px; height:30px; padding:2px 6px;" onchange="render()">
               <option value="10" selected>10</option>
               <option value="25">25</option>
               <option value="50">50</option>
@@ -419,17 +419,17 @@ table.data-table td {
             </select>
             <span>entries</span>
           </div>
-          <div class="application-search position-relative" style="width:220px;">
-            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2.5 text-muted" style="font-size:12px;"></i>
-            <input type="text" class="form-control form-control-sm ps-4" id="appSearchInput" aria-label="Search application usage" placeholder="Search district, data..." style="font-size:12px;" oninput="render()">
+          <div class="application-search position-relative" style="width:200px;">
+            <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2.5 text-muted" style="font-size:11px;"></i>
+            <input type="text" class="form-control form-control-sm ps-4" id="appSearchInput" aria-label="Search application usage" placeholder="Search district, data..." style="font-size:11.5px; height:30px;" oninput="render()">
           </div>
-          <button class="btn btn-sm btn-export-excel d-inline-flex align-items-center gap-1.5" onclick="exportAppUsageTable()">
+          <button class="btn btn-sm btn-export-excel d-inline-flex align-items-center gap-1.5" style="height:30px; font-size:11.5px; padding:3px 10px;" onclick="exportAppUsageTable()">
             <i class="bi bi-download"></i>
             <span>Export</span>
           </button>
         </div>
       </div>
-      <div class="table-responsive p-3 pt-0">
+      <div class="table-responsive px-3 pb-2 pt-0">
         <table class="data-table table-hover mb-0">
           <thead id="appThead"></thead>
           <tbody id="appTbody"></tbody>
@@ -624,8 +624,7 @@ table.data-table td {
       <div class="summary-strip" aria-label="Teacher training summary">
         <div class="summary-stat"><div class="stat-label">Teachers trained</div><strong id="trainingTeachers">—</strong><small>Sum of sample school totals</small></div>
         <div class="summary-stat"><div class="stat-label">Schools reporting</div><strong id="trainingSchools">—</strong><small>Schools in the sample snapshot</small></div>
-        <div class="summary-stat"><div class="stat-label">Detailed training records</div><strong id="trainingRecords">—</strong><small>Illustrative teacher session records</small></div>
-        <div class="summary-stat"><div class="stat-label">Training modules</div><strong id="trainingModules">—</strong><small>Unique modules in the detail sample</small></div>
+        <div class="summary-stat"><div class="stat-label">Students trained</div><strong id="trainingRecords">0</strong><small>Students trained in digital classroom</small></div>
       </div>
       <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2 p-2 rounded-3" style="background: rgba(19, 26, 43, 0.7); border: 1px solid var(--line);">
         <button class="btn btn-sm btn-back-report px-3 py-1" onclick="showReportModule('grid')">
@@ -850,7 +849,154 @@ table.data-table td {
   </div>
 
   <!-- VIEW: COMPLAINTS -->
-  <div id="view-complaints" class="view-section"><div class="card-surface national-geography-card"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"><div><h2 class="section-title">Support tickets by location</h2><p class="section-sub mt-1" data-national-level>State-wise summary</p></div><div class="d-flex gap-2"><button id="supportBackButton" type="button" class="heading-action module-back-button" onclick="nationalModuleGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','excel')">Excel</button><button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','pdf')">PDF</button></div></div><div class="table-responsive"><table class="data-table w-100"><thead id="complaintGeoThead"></thead><tbody id="complaintGeoTbody"></tbody></table></div></div><button class="heading-action" type="button" data-bs-toggle="modal" data-bs-target="#registerComplaintModal">Register complaint</button></div>
+  <div id="view-complaints" class="view-section">
+    <!-- Ticket search section (Visual KPIs & Issues breakdown) -->
+    <div class="card-surface ticket-explorer mb-3">
+      <div class="ticket-explorer-head">
+        <div>
+          <h3>Ticket search</h3>
+          <p>Search the selected schools and date range. Sample ticket records are demonstrative.</p>
+        </div>
+        <div class="ticket-explorer-controls">
+          <input id="ticketExplorerSearch" class="form-control" type="search" placeholder="Search ticket ID, school, UDISE, or location">
+          <select id="ticketExplorerStatus" class="form-select">
+            <option value="all">All statuses</option>
+            <option value="open" selected>Open</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+      </div>
+      <div id="ticketExplorerVisuals">
+        <div class="detail-visual-kpis">
+          <div class="detail-visual-kpi"><span>Tickets shown</span><strong id="ticketKpiShown">231</strong></div>
+          <div class="detail-visual-kpi"><span>Open</span><strong id="ticketKpiOpen">221</strong></div>
+          <div class="detail-visual-kpi"><span>Resolved</span><strong id="ticketKpiResolved">10</strong></div>
+        </div>
+        <section class="detail-chart-panel mb-0">
+          <h3>Tickets by issue</h3>
+          <p>Breakdown of the currently visible ticket results.</p>
+          <div class="detail-bar-list" id="ticketIssueBarList">
+            <div class="detail-bar-row"><span class="detail-bar-label" title="Display or stylus issue">Display or stylus issue</span><span class="detail-bar-track" role="img" aria-label="Display or stylus issue: 57"><span style="width:100%"></span></span><span class="detail-bar-value">57</span></div>
+            <div class="detail-bar-row"><span class="detail-bar-label" title="Classroom network issue">Classroom network issue</span><span class="detail-bar-track" role="img" aria-label="Classroom network issue: 51"><span style="width:89.47%"></span></span><span class="detail-bar-value">51</span></div>
+            <div class="detail-bar-row"><span class="detail-bar-label" title="Learning content sync issue">Learning content sync issue</span><span class="detail-bar-track" role="img" aria-label="Learning content sync issue: 44"><span style="width:77.19%"></span></span><span class="detail-bar-value">44</span></div>
+            <div class="detail-bar-row"><span class="detail-bar-label" title="System startup issue">System startup issue</span><span class="detail-bar-track" role="img" aria-label="System startup issue: 40"><span style="width:70.18%"></span></span><span class="detail-bar-value">40</span></div>
+            <div class="detail-bar-row"><span class="detail-bar-label" title="Audio issue">Audio issue</span><span class="detail-bar-track" role="img" aria-label="Audio issue: 39"><span style="width:68.42%"></span></span><span class="detail-bar-value">39</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="supportTabsContainer">
+    <!-- Sub-Tabs Navigation (Support tickets by location & Details) -->
+    <div class="support-nav-tabs mb-3" role="tablist" aria-label="Support tickets view">
+      <button id="supportTabLocation" class="support-nav-tab" type="button" role="tab" aria-selected="true" aria-controls="supportLocationPanel" onclick="setSupportTicketView('location')" onkeydown="supportTabKey(event,'location')">
+        <i class="bi bi-geo-alt-fill" aria-hidden="true"></i> <span>Support tickets by location</span>
+      </button>
+      <button id="supportTabDetails" class="support-nav-tab" type="button" role="tab" aria-selected="false" aria-controls="supportDetailsPanel" tabindex="-1" onclick="setSupportTicketView('details')" onkeydown="supportTabKey(event,'details')">
+        <i class="bi bi-card-checklist" aria-hidden="true"></i> <span>Details</span>
+      </button>
+    </div>
+
+    <!-- Tab 1: Support tickets by location -->
+    <div id="supportLocationPanel" role="tabpanel" aria-labelledby="supportTabLocation">
+      <div class="card-surface national-geography-card">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div>
+              <h2 class="section-title mb-0">Summary</h2>
+              <p class="section-sub mt-1 mb-0" data-national-level>State-wise summary</p>
+            </div>
+            <div style="width:230px;">
+              <input type="text" class="form-control form-control-sm" id="supportLocationSearchInput" placeholder="Quick search location..." style="height:32px; font-size:12px;" oninput="render()">
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button id="supportBackButton" type="button" class="heading-action module-back-button" onclick="nationalModuleGoBack()" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i> Back</button>
+            <button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','excel')">Excel</button>
+            <button type="button" class="heading-action" onclick="exportNationalReport('view-complaints','pdf')">PDF</button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table w-100">
+            <thead id="complaintGeoThead"></thead>
+            <tbody id="complaintGeoTbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <button class="heading-action mt-2" type="button" data-bs-toggle="modal" data-bs-target="#registerComplaintModal">Register complaint</button>
+    </div>
+
+    <!-- Tab 2: Details -->
+    <div id="supportDetailsPanel" role="tabpanel" aria-labelledby="supportTabDetails" hidden>
+      <div class="card-surface p-0" style="overflow:hidden; border-radius:10px;">
+        <div class="d-flex align-items-center justify-content-between p-3 flex-wrap gap-2" style="border-bottom: 1px solid var(--line);">
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="fw-semibold font-display" style="font-size:13px; color:var(--ink);">
+              <i class="bi bi-ticket-detailed me-1.5 text-primary"></i>Support Tickets Details
+            </span>
+            <div style="width:230px;">
+              <input type="text" class="form-control form-control-sm" id="ticketDetailSearchInput" placeholder="Quick search tickets..." style="height:32px; font-size:12px;" oninput="renderTicketDetailsTable()">
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="d-flex align-items-center gap-1.5" style="font-size:11.5px; color:var(--muted);">
+              <span>Show</span>
+              <select id="ticketDetailEntriesSelect" class="form-select form-select-sm" style="width:62px; height:32px; font-size:11.5px; padding:2px 6px;" onchange="renderTicketDetailsTable()">
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+              <span>entries</span>
+            </div>
+            <button class="btn btn-sm btn-export-excel d-inline-flex align-items-center gap-1.5" style="height:30px; font-size:11.5px; padding:3px 10px;" onclick="exportTicketDetailsTable('excel')">
+              <i class="bi bi-file-earmark-excel"></i><span>Excel</span>
+            </button>
+            <button class="btn btn-sm btn-export-pdf d-inline-flex align-items-center gap-1.5" style="height:30px; font-size:11.5px; padding:3px 10px;" onclick="exportTicketDetailsTable('pdf')">
+              <i class="bi bi-file-earmark-pdf"></i><span>PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table table-hover mb-0 w-100" id="ticketDetailTable" style="font-size:12px; min-width:1850px;">
+            <thead>
+              <tr style="background:#eef2f7; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap;">
+                <th style="padding:11px 12px; text-align:center; width:45px;">#</th>
+                <th style="padding:11px 12px; width:100px;">TICKET</th>
+                <th style="padding:11px 12px; min-width:280px;">INCIDENT TYPE</th>
+                <th style="padding:11px 12px; min-width:150px;">LOGGED ON</th>
+                <th style="padding:11px 12px; min-width:150px;">CLOSED ON</th>
+                <th style="padding:11px 12px; width:90px;">SLA DAYS</th>
+                <th style="padding:11px 12px; width:80px;">SLA COST</th>
+                <th style="padding:11px 12px; width:110px;">UDISE CODE</th>
+                <th style="padding:11px 12px; min-width:200px;">SCHOOL NAME</th>
+                <th style="padding:11px 12px; width:110px;">DEVICE TYPE</th>
+                <th style="padding:11px 12px; width:140px;">DEVICE ID</th>
+                <th style="padding:11px 12px; width:150px;">ENGINEER ASSIGNED</th>
+                <th style="padding:11px 12px; width:120px;">TEAM</th>
+                <th style="padding:11px 12px; width:100px;">PARTNER</th>
+                <th style="padding:11px 12px; width:150px;">SERVICE CATEGORY</th>
+                <th style="padding:11px 12px; min-width:210px;">PROJECT</th>
+                <th style="padding:11px 12px; width:90px;">ZONE_NAME</th>
+                <th style="padding:11px 12px; width:130px; text-align:center;">CLOSURE REPORT</th>
+              </tr>
+            </thead>
+            <tbody id="ticketDetailBody"></tbody>
+          </table>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between p-3 flex-wrap gap-2" style="font-size:11.5px; color:var(--muted); border-top:1px solid var(--line);">
+          <div id="ticketDetailEntriesInfo">Showing 1 to 6 of 6 entries</div>
+          <div class="d-flex gap-1" id="ticketDetailPagination">
+            <button class="btn btn-sm btn-outline-secondary px-2.5 py-1" style="font-size:11px;" disabled>Previous</button>
+            <button class="btn btn-sm btn-primary px-2.5 py-1" style="font-size:11px;">1</button>
+            <button class="btn btn-sm btn-outline-secondary px-2.5 py-1" style="font-size:11px;" disabled>Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
   <!-- VIEW: AUDIT LOGS -->
   <div id="view-audit" class="view-section">
     <div class="card-surface mt-2 mb-4 p-3">
@@ -897,7 +1043,6 @@ table.data-table td {
               <th>RBAC Role</th>
               <th>Activity / Action Log</th>
               <th>IP Address / Location</th>
-              <th>Security Status</th>
             </tr>
           </thead>
           <tbody id="auditTbody"></tbody>
@@ -4374,7 +4519,7 @@ function renderAuditLogsTable() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No audit log records found matching the filter criteria.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No audit log records found matching the filter criteria.</td></tr>`;
     return;
   }
 
@@ -4385,7 +4530,6 @@ function renderAuditLogsTable() {
       <td><span class="badge bg-primary bg-opacity-25 text-cyan border border-info border-opacity-50" style="font-size:10px;">${escapeHtml(item.role)}</span></td>
       <td style="color:#E2E8F0;">${escapeHtml(item.action)}</td>
       <td class="font-mono text-muted" style="font-size:11px;">${escapeHtml(item.ip)}</td>
-      <td><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50" style="font-size:9.5px;"><i class="bi bi-shield-check me-1"></i>${escapeHtml(item.status)}</span></td>
     </tr>
   `).join('');
 }
@@ -4939,5 +5083,6 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 <script src="js/observation-updates.js?v=20261104-3"></script>
 <script src="js/navigation-updates.js?v=20261104-3"></script>
 <script src="js/training-card.js?v=20261104-2"></script>
+<script src="js/device-monitor-insights.js?v=20261105-compact"></script>
 </body>
 </html>

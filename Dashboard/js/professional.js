@@ -182,24 +182,65 @@ function wrapReportLine(value, limit = 92) {
 }
 
 function makePdf(rows, title, context) {
-  const headers = rows[0] || [], lines = [];
-  rows.slice(1).forEach((row, index) => {
-    lines.push(`Record ${index + 1}`);
-    row.forEach((value, col) => lines.push(...wrapReportLine(`${headers[col] || 'Value'}: ${value}`)));
-    lines.push('');
+  const headers = rows[0] || [];
+  const data = rows.slice(1);
+  const columnWeights = headers.map((header, index) => {
+    const key = String(header).toLowerCase();
+    if (key.includes('device') || key.includes('school')) return 1.55;
+    if (key.includes('state')) return 1.2;
+    if (key.includes('activity')) return 1.05;
+    return 1.25;
   });
-  if (!lines.length) lines.push('No records in this view.');
-  const pages = [];
-  for (let i = 0; i < lines.length; i += 48) pages.push(lines.slice(i, i + 48));
-  const objects = ['', '', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'];
+  const weightTotal = columnWeights.reduce((sum, value) => sum + value, 0) || 1;
+  const pageWidth = 842, pageHeight = 595, margin = 32;
+  const tableWidth = pageWidth - margin * 2;
+  const widths = columnWeights.map(value => tableWidth * value / weightTotal);
+  const pageRows = [];
+  const rowsPerPage = 19;
+  for (let i = 0; i < data.length; i += rowsPerPage) pageRows.push(data.slice(i, i + rowsPerPage));
+  if (!pageRows.length) pageRows.push([]);
+
+  const objects = ['', '', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>'];
   const kids = [];
-  pages.forEach((page, index) => {
+  pageRows.forEach((pageRowsChunk, pageIndex) => {
     const pageId = objects.length + 1, streamId = pageId + 1;
     kids.push(`${pageId} 0 R`);
-    const contextLines = wrapReportLine(context, 88).slice(0, 2);
-    const content = `BT /F1 16 Tf 42 793 Td (${pdfText(title)}) Tj /F1 9 Tf 0 -22 Td (ERNET India | Client preview | Sample data) Tj ${contextLines.map(line => `0 -13 Td (${pdfText(line)}) Tj`).join(' ')} 0 -24 Td /F1 10 Tf 14 TL ${page.map(line => `(${pdfText(line)}) Tj T*`).join('\n')} ET\nBT /F1 9 Tf 42 28 Td (Page ${index + 1} of ${pages.length}) Tj ET`;
-    objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents ${streamId} 0 R >>`);
-    objects.push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    const commands = [];
+    const drawText = (x, y, value, size = 9, bold = false, color = '0 0 0') => {
+      commands.push(`BT ${color} rg /F${bold ? 2 : 1} ${size} Tf 1 0 0 1 ${x.toFixed(2)} ${y.toFixed(2)} Tm (${pdfText(value)}) Tj ET`);
+    };
+    drawText(margin, 562, title, 16, true, '0.08 0.12 0.18');
+    drawText(margin, 545, 'ERNET India | Client preview | Sample data', 9, false, '0.35 0.42 0.52');
+    const contextLine = wrapReportLine(context, 145)[0] || '';
+    drawText(margin, 530, contextLine, 8, false, '0.35 0.42 0.52');
+
+    let yTop = 508;
+    const rowHeight = 22;
+    commands.push(`0.94 0.96 0.98 rg ${margin} ${yTop - rowHeight} ${tableWidth} ${rowHeight} re f`);
+    let x = margin;
+    headers.forEach((header, col) => {
+      commands.push(`0.78 0.82 0.88 RG 0.6 w ${x} ${yTop - rowHeight} ${widths[col]} ${rowHeight} re S`);
+      drawText(x + 6, yTop - 14, String(header).slice(0, Math.max(8, Math.floor(widths[col] / 5.2))), 8, true, '0.12 0.17 0.24');
+      x += widths[col];
+    });
+    yTop -= rowHeight;
+
+    pageRowsChunk.forEach(row => {
+      x = margin;
+      row.forEach((value, col) => {
+        commands.push(`0.82 0.85 0.89 RG 0.5 w ${x} ${yTop - rowHeight} ${widths[col]} ${rowHeight} re S`);
+        const maxChars = Math.max(8, Math.floor((widths[col] - 12) / 4.5));
+        const text = String(value ?? '');
+        const shown = text.length > maxChars ? text.slice(0, maxChars - 1) + '~' : text;
+        drawText(x + 6, yTop - 14, shown, 8, false, '0.08 0.1 0.14');
+        x += widths[col];
+      });
+      yTop -= rowHeight;
+    });
+    drawText(pageWidth - margin - 72, 20, `Page ${pageIndex + 1} of ${pageRows.length}`, 8, false, '0.35 0.42 0.52');
+    const content = commands.join('\n') + '\n';
+    objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${streamId} 0 R >>`);
+    objects.push(`<< /Length ${content.length} >>\nstream\n${content}endstream`);
   });
   objects[0] = '<< /Type /Catalog /Pages 2 0 R >>';
   objects[1] = `<< /Type /Pages /Kids [${kids.join(' ')}] /Count ${kids.length} >>`;
@@ -211,7 +252,6 @@ function makePdf(rows, title, context) {
   pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
   return new TextEncoder().encode(pdf);
 }
-
 function exportTableReport(tableId, format, title) {
   const table = document.getElementById(tableId);
   if (!table) return showPrototypeMessage('The selected report is unavailable.');
@@ -267,8 +307,7 @@ renderTeacherTrainingTable = function () {
   originalTrainingRender();
   document.getElementById('trainingTeachers').textContent = TEACHER_TRAINING_SCHOOL_SUMMARY.reduce((sum, row) => sum + (parseInt(row.trained, 10) || 0), 0).toLocaleString('en-IN');
   document.getElementById('trainingSchools').textContent = TEACHER_TRAINING_SCHOOL_SUMMARY.length;
-  document.getElementById('trainingRecords').textContent = TEACHER_TRAINING_DETAILS.length;
-  document.getElementById('trainingModules').textContent = new Set(TEACHER_TRAINING_DETAILS.map(row => row.training)).size;
-};
+  document.getElementById('trainingRecords').textContent = 0;
+  };
 updateWorkspaceHeading(currentView);
 render();

@@ -63,6 +63,17 @@
   const ticketMarker = ticketExplorer ? document.createComment('Ticket explorer home') : null;
   if (ticketExplorer && ticketHome) ticketHome.insertBefore(ticketMarker, ticketExplorer);
 
+  const supportTabsContainer = document.getElementById('supportTabsContainer');
+  const supportHome = supportTabsContainer?.parentNode;
+  const supportMarker = supportTabsContainer ? document.createComment('Support tabs container home') : null;
+  if (supportTabsContainer && supportHome) supportHome.insertBefore(supportMarker, supportTabsContainer);
+
+  function restoreSupportContainer() {
+    if (supportTabsContainer && supportMarker?.parentNode && supportTabsContainer.parentNode !== supportMarker.parentNode) {
+      supportMarker.parentNode.insertBefore(supportTabsContainer, supportMarker.nextSibling);
+    }
+  }
+
   const initialView = typeof currentView === 'string' ? currentView : 'view-overview';
   const routes = [{ type: 'view', id: initialView }];
   let routeIndex = 0;
@@ -90,7 +101,9 @@
   function closeDetailPopup(){
     if (detailDialog.open) detailDialog.close();
     restoreTicketExplorer();
+    restoreSupportContainer();
     activeDetail = null;
+    window.activeDetail = null;
   }
   function setDetailDates(){
     if (typeof DOM === 'undefined') return;
@@ -229,17 +242,41 @@
     host.innerHTML=utilizationRows.length>=10?'<section aria-labelledby="stateUtilizationTitle"><h3 id="stateUtilizationTitle" class="state-utilization-heading">Device utilization by state</h3><p class="dashboard-detail-note">Ranked by average daily usage per device. Rankings appear when at least 10 records have usage data.</p><div class="state-ranking-grid">'+chart('Top 5 states','Highest average daily usage per device',top,5,maxUsage)+chart('Bottom 5 states','Lowest average daily usage per device',bottom,5,maxUsage)+'</div></section>':'';
   }
   function showDetail(key){
-    if(activeDetail!==key){restoreTicketExplorer();document.getElementById('dashboardDetailBody').innerHTML='';}
+    if(activeDetail!==key){
+      restoreTicketExplorer();
+      restoreSupportContainer();
+      document.getElementById('dashboardDetailBody').innerHTML='';
+    }
     activeDetail=key;
+    window.activeDetail=key;
     if(key==='tickets'){
+      detailDialog.style.width = 'min(1280px, 96vw)';
+      detailDialog.style.maxWidth = '1280px';
       document.getElementById('dashboardDetailTitle').textContent='Support tickets';
       document.getElementById('dashboardDetailSubtitle').textContent='Search tickets in the selected geography and date range.';
       document.getElementById('dashboardDetailBody').innerHTML='';
-      if(ticketExplorer)document.getElementById('dashboardDetailBody').appendChild(ticketExplorer);
-    } else renderDetailTable();
+      if(ticketExplorer) {
+        document.getElementById('dashboardDetailBody').appendChild(ticketExplorer);
+      }
+      if(supportTabsContainer) {
+        document.getElementById('dashboardDetailBody').appendChild(supportTabsContainer);
+      }
+      if(typeof renderTicketExplorer === 'function') {
+        renderTicketExplorer();
+      }
+      if(typeof setSupportTicketView === 'function') {
+        setSupportTicketView('location');
+      }
+      if(typeof renderNationalTable === 'function') {
+        renderNationalTable('view-complaints', typeof nationalScope === 'function' ? nationalScope() : []);
+      }
+    } else {
+      detailDialog.style.width = 'min(1120px, 95vw)';
+      detailDialog.style.maxWidth = '1120px';
+      renderDetailTable();
+    }
     setDetailDates();
     if(!detailDialog.open)detailDialog.showModal();
-    if(key==='tickets'&&typeof window.renderTicketExplorer==='function')window.renderTicketExplorer();
     updateHistoryButtons();
   }
   function applyRoute(route){
@@ -253,11 +290,18 @@
   window.dashboardGoForward=function(){if(routeIndex>=routes.length-1)return;routeIndex++;applyRoute(routes[routeIndex]);};
   window.openDashboardDetail=function(key){schoolPage=1;tableSort={column:-1,direction:1};pushRoute({type:'detail',key});applyRoute(routes[routeIndex]);};
   window.exportDashboardDetail=function(format){
-    let tableId=activeDetail==='tickets'?'ticketExplorerTable':'dashboardDetailTable';
-    const table=activeDetail==='tickets'?ticketExplorer?.querySelector('table'):document.getElementById('dashboardDetailTable');
+    if(activeDetail==='tickets'){
+      const isDetailsActive = document.getElementById('supportTabDetails')?.getAttribute('aria-selected') === 'true';
+      if(isDetailsActive){
+        if(typeof exportTicketDetailsTable === 'function') exportTicketDetailsTable(format);
+      } else {
+        if(typeof exportNationalReport === 'function') exportNationalReport('view-complaints', format);
+      }
+      return;
+    }
+    let tableId='dashboardDetailTable';
+    const table=document.getElementById('dashboardDetailTable');
     if(!table)return showPrototypeMessage('The selected table is unavailable.');
-    if(activeDetail==='tickets'&&!table.id)table.id='ticketExplorerTable';
-    if(activeDetail!=='tickets')tableId='dashboardDetailTable';
     exportTableReport(tableId,format,document.getElementById('dashboardDetailTitle').textContent);
   };
   window.switchTab=function(view){
@@ -279,6 +323,21 @@
     if(card)card.onclick=()=>openDashboardDetail(key);
   });
   const originalRender=render;
-  render=function(){originalRender();if(detailDialog.open){setDetailDates();if(activeDetail==='tickets'&&typeof window.renderTicketExplorer==='function')window.renderTicketExplorer();else renderDetailTable();}};
+  render=function(){
+    originalRender();
+    if(detailDialog.open){
+      setDetailDates();
+      if(activeDetail==='tickets'){
+        if(typeof renderNationalTable === 'function'){
+          renderNationalTable('view-complaints', typeof nationalScope === 'function' ? nationalScope() : []);
+        }
+        if(typeof renderTicketDetailsTable === 'function'){
+          renderTicketDetailsTable();
+        }
+      } else {
+        renderDetailTable();
+      }
+    }
+  };
   updateHistoryButtons();
 })();

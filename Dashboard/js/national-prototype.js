@@ -12,6 +12,64 @@ let nationalPerformanceRows=[];
 const nationalRows = {};
 let nationalDailyCacheKey='';
 const nationalDailyCache=new Map();
+var PRESET_APP_DATA = {
+  "Central": { yt: 7.2, br: 5.49, of: 5.82, sb: 5.07, nt: 0, ot: 0, hrs: "284:27:48" },
+  "East": { yt: 17.61, br: 0, of: 1.22, sb: 11.08, nt: 0, ot: 0, hrs: "446:36:19" },
+  "New Delhi": { yt: 3.0, br: 3.56, of: 0.45, sb: 18.19, nt: 0, ot: 0, hrs: "105:33:24" },
+  "North": { yt: 10.02, br: 0, of: 1.18, sb: 17.38, nt: 0, ot: 0.48, hrs: "1558:19:09" },
+  "North West B-I": { yt: 11.44, br: 0, of: 1.31, sb: 12.74, nt: 0.01, ot: 0.07, hrs: "2326:53:54" },
+  "North West B-II": { yt: 11.23, br: 4.21, of: 1.78, sb: 9.6, nt: 0.06, ot: 0.26, hrs: "2626:48:11" },
+  "South West B-I": { yt: 20.93, br: 0, of: 1.09, sb: 16.41, nt: 0, ot: 0, hrs: "428:44:59" },
+  "South West-A": { yt: 8.07, br: 16.98, of: 0, sb: 0, nt: 0, ot: 2.28, hrs: "107:56:32" },
+  "West-B": { yt: 2.5, br: 19.26, of: 0, sb: 0, nt: 0, ot: 0, hrs: "6:50:28" }
+};
+
+function calculateAppBreakdown(label, key, totalHours) {
+  const norm = String(label || key || '').trim();
+  const match = Object.keys(PRESET_APP_DATA).find(k => k.toLowerCase() === norm.toLowerCase());
+  if (match) return PRESET_APP_DATA[match];
+
+  const totalSeconds = Math.round((Number(totalHours) || 0) * 3600);
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  const hrsFormatted = h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+
+  const seed = Math.abs(hashStr(String(key || label || 'app')));
+  const yt = Number(((seed % 1800) / 100 + 2.5).toFixed(seed % 3 === 0 ? 1 : 2));
+  const br = (seed % 3 === 0) ? 0 : Number(((Math.floor(seed / 5) % 1600) / 100 + 1.0).toFixed(seed % 2 === 0 ? 1 : 2));
+  const of = (seed % 4 === 0) ? 0 : Number(((Math.floor(seed / 11) % 500) / 100 + 0.3).toFixed(2));
+  const sb = (seed % 5 === 0) ? 0 : Number(((Math.floor(seed / 17) % 1500) / 100 + 4.0).toFixed(seed % 2 === 0 ? 1 : 2));
+  const nt = (seed % 6 === 0) ? Number((((seed % 8) + 1) / 100).toFixed(2)) : 0;
+  const ot = (seed % 3 === 0) ? Number(((Math.floor(seed / 23) % 200) / 100).toFixed(2)) : 0;
+
+  return { yt, br, of, sb, nt, ot, hrs: hrsFormatted };
+}
+
+function formatAppPill(type, val, rawHrs, label) {
+  if (type === 'yt') {
+    return '<span class="app-pill app-pill-yt"><span class="app-pill-icon-yt"><i class="bi bi-play-fill"></i></span> ' + val + '%</span>';
+  }
+  if (type === 'br') {
+    return '<span class="app-pill app-pill-br"><i class="bi bi-globe2"></i> ' + val + '%</span>';
+  }
+  if (type === 'of') {
+    return '<span class="app-pill app-pill-of"><i class="bi bi-file-earmark-word"></i> ' + val + '%</span>';
+  }
+  if (type === 'sb') {
+    return '<span class="app-pill app-pill-sb"><i class="bi bi-easel"></i> ' + val + '%</span>';
+  }
+  if (type === 'nt') {
+    return '<span class="app-pill app-pill-nt"><i class="bi bi-journal-text"></i> ' + val + '%</span>';
+  }
+  if (type === 'ot') {
+    const oHrs = ((Number(rawHrs || 0) * Number(val)) / 100).toFixed(1);
+    const safeLbl = String(label || 'App Breakdown').replace(/'/g, "\\'");
+    return '<span class="app-pill app-pill-ot" onclick="event.stopPropagation(); if(typeof openOtherAppsModal===\'function\')openOtherAppsModal(\'' + safeLbl + '\',\'Location\',' + val + ',' + oHrs + ')" title="Click to view Other Apps breakdown"><i class="bi bi-grid-fill"></i> ' + val + '% <i class="bi bi-box-arrow-up-right app-ot-popout"></i></span>';
+  }
+  return val + '%';
+}
+
 const nationalBaseSchools = window.KGBV_SCHOOLS.map(school=>{
   const seed=Math.abs(hashStr(school.id));
   const devices=[1,2].map(index=>{
@@ -68,7 +126,8 @@ function nationalTableIds(view) {
   return {'view-overview':['overviewGeoThead','overviewGeoTbody'],'view-device':['deviceThead','deviceTbody'],'view-app':['appThead','appTbody'],'view-content':['contentGeoThead','contentGeoTbody'],'view-complaints':['complaintGeoThead','complaintGeoTbody']}[view];
 }
 function nationalDrill(index) {
-  const row=nationalRows[currentView]?.[index];if(!row||row.kind==='pending')return;
+  const drillView = (window.activeDetail === 'tickets' || (document.getElementById('dashboardDetailDialog')?.open && window.activeDetail === 'tickets')) ? 'view-complaints' : currentView;
+  const row=(nationalRows[drillView] || nationalRows[currentView])?.[index];if(!row||row.kind==='pending')return;
   const levels=['state','district','block','school','device'];
   nationalPerformanceChoice=null;nationalPerformancePageNumber=1;document.getElementById('performanceSearch').value='';
   nationalPath[row.kind]=row.key;
@@ -236,8 +295,20 @@ function nationalDailyDetail(view,scope,ids) {
   const records=nationalDailyData(device),hours=minutes=>(minutes/60).toFixed(2)+' hrs';
   let columns=['Date'],rows=[];
   if(view==='view-app'){
-    columns.push('DIKSHA','Browser','Smart Board','Notes / Office','Total app usage','Sessions');
-    rows=records.map(day=>[day.date,...day.appMinutes.map(hours),hours(day.minutes),String(day.sessions)]);
+    columns.push('YouTube','Browser','Office','Smart Board','Notes','Other Apps','Usage Hours');
+    rows=records.map(day=>{
+      const b=calculateAppBreakdown(day.date, device.serial+'|'+day.date, day.minutes/60);
+      return [
+        day.date,
+        formatAppPill('yt', b.yt),
+        formatAppPill('br', b.br),
+        formatAppPill('of', b.of),
+        formatAppPill('sb', b.sb),
+        formatAppPill('nt', b.nt),
+        formatAppPill('ot', b.ot, day.minutes/60, day.date),
+        '<span class="app-usage-hours"><i class="bi bi-clock me-1 text-muted"></i>'+b.hrs+'</span>'
+      ];
+    });
   } else if(view==='view-content'){
     columns.push('Content usage','Content views','Sessions','Subject');
     rows=records.map(day=>[day.date,hours(day.contentMinutes),String(day.views),String(day.contentSessions),day.minutes?day.subject:'No usage']);
@@ -251,37 +322,59 @@ function nationalDailyDetail(view,scope,ids) {
   }
   nationalRows[view]=records.map(day=>({kind:'date',label:day.date,key:day.date,day}));
   document.getElementById(ids[0]).innerHTML='<tr>'+columns.map(value=>'<th>'+value+'</th>').join('')+'</tr>';
-  document.getElementById(ids[1]).innerHTML=rows.length?rows.map(row=>'<tr>'+row.map(value=>'<td>'+escapeHtml(value)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+columns.length+'" class="text-center py-4">No tickets for this device.</td></tr>';
+  document.getElementById(ids[1]).innerHTML=rows.length?rows.map(row=>'<tr>'+row.map(value=>'<td>'+value+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+columns.length+'" class="text-center py-4">No records for this device.</td></tr>';
 }
 function renderNationalTable(view,scope) {
   const ids=nationalTableIds(view);if(!ids)return;
   const canGoBack=['state','district','block','school','device'].some(key=>Boolean(nationalPath[key]));
   for(const id of ['deviceBackButton','applicationBackButton','supportBackButton']){const button=document.getElementById(id);if(button)button.disabled=!canGoBack;}
   const title=view==='view-device'?document.getElementById('deviceWorkflowTitle'):null;
-  if(nationalPath.device){if(view==='view-overview')renderCoverageMap(scope);if(title)title.textContent='Daily device usage';nationalDailyDetail(view,scope,ids);document.querySelectorAll('[data-national-level]').forEach(el=>el.textContent=currentView==='view-complaints'?'Device ticket history':'Date-wise usage');return;}
+  if(nationalPath.device){if(view==='view-overview')renderCoverageMap(scope);if(title)title.textContent='Daily device usage';nationalDailyDetail(view,scope,ids);document.querySelectorAll('[data-national-level]').forEach(el=>el.textContent=(currentView==='view-complaints'||window.activeDetail==='tickets')?'Device ticket history':'Date-wise usage');return;}
   let rows=nationalHierarchyRows(scope);if(view==='view-overview')rows=rows.filter(row=>row.kind!=='pending');
-  if(view==='view-app'){const query=(document.getElementById('appSearchInput')?.value||'').toLowerCase().trim();if(query)rows=rows.filter(row=>[row.label,row.items[0]?.state,row.items[0]?.udise].some(value=>String(value||'').toLowerCase().includes(query)));}
+  if(view==='view-app'){
+    const query=(document.getElementById('appSearchInput')?.value||'').toLowerCase().trim();
+    if(query)rows=rows.filter(row=>[row.label,row.items[0]?.state,row.items[0]?.udise].some(value=>String(value||'').toLowerCase().includes(query)));
+    const limit=parseInt(document.getElementById('appEntriesSelect')?.value, 10);
+    if(!isNaN(limit)&&limit>0)rows=rows.slice(0,limit);
+  }
+  if(view==='view-complaints'){
+    const query=(document.getElementById('supportLocationSearchInput')?.value||'').toLowerCase().trim();
+    if(query)rows=rows.filter(row=>[row.label,row.items[0]?.state,row.items[0]?.district,row.items[0]?.udise].some(value=>String(value||'').toLowerCase().includes(query)));
+  }
   nationalRows[view]=rows;if(view==='view-overview')renderCoverageMap(scope);
   const level=nationalLevel(),name={state:'State',district:'District',block:'Block',school:'School',device:'Device serial number'}[level];
   if(title)title.textContent=level==='device'?'School devices':'Device usage by '+name.toLowerCase();
   const showSchools=['state','district','block'].includes(level),isCoverage=view==='view-overview';
-  let columns=isCoverage?[name]:['#',name];if(level==='school')columns.push('UDISE number');
+  let columns=isCoverage?[name]:[view==='view-app'?'S.No':'#',name];if(level==='school')columns.push('UDISE number');
   if(isCoverage){if(showSchools)columns.push('Programme schools');if(level==='state')columns.push('Districts','Blocks');else if(level==='district')columns.push('Blocks');else if(level==='school')columns.push('Teaching devices');else if(level==='device')columns.push('Model','Connection');}
   else if(view==='view-device'){if(showSchools)columns.push('Schools');columns.push(...(level==='device'?['Connection','Usage hours','Sessions','Open tickets']:['Teaching devices','Active devices','Device activity','Usage hours']));}
-  else if(view==='view-app'){if(showSchools)columns.push('Schools');columns.push(...(level==='device'?['App usage hours','App sessions','Connection']:['Teaching devices','App usage hours','App sessions']));}
+  else if(view==='view-app'){if(showSchools)columns.push('Schools');columns.push(...(level==='device'?['Teaching<br>devices','YouTube','Browser','Office','Smart Board','Notes','Other Apps','Usage Hours']:['Teaching<br>devices','YouTube','Browser','Office','Smart Board','Notes','Other Apps','Usage Hours']));}
   else if(view==='view-content'){if(showSchools)columns.push('Schools');columns.push(...(level==='device'?['Content usage hours','Content views','Sessions']:['Teaching devices','Content usage hours','Content views']));}
   else{if(showSchools)columns.push('Schools');columns.push(...(level==='device'?['Open tickets','Resolved tickets','Status']:['Teaching devices','Open tickets','Resolved tickets']));}
   document.getElementById(ids[0]).innerHTML='<tr>'+columns.map(value=>'<th>'+value+'</th>').join('')+'</tr>';
   document.getElementById(ids[1]).innerHTML=rows.length?rows.map((row,index)=>{
     const metrics=nationalMetrics(row.items),isState=row.kind==='state',schoolCount=isState&&!DOM.schId.value.trim()&&!(typeof nationalHasGeoFilters==='function'&&nationalHasGeoFilters())?Math.max(NATIONAL_TARGETS[row.key]||0,metrics.schools):metrics.schools;
-    const cells=[String(index+1),'<button class="national-drill-link" type="button" onclick="nationalDrill('+index+')" '+(row.kind==='pending'?'disabled':'')+'>'+escapeHtml(row.label)+(row.kind==='pending'?'':' <i class="bi bi-chevron-right"></i>')+'</button>'];
+    const drillName = escapeHtml(row.label);
+    const cells=[String(index+1),'<button class="national-drill-link" type="button" onclick="nationalDrill('+index+')" '+(row.kind==='pending'?'disabled':'')+'>'+drillName+(row.kind==='pending'?'':' <i class="bi bi-chevron-right"></i>')+'</button>'];
     if(isCoverage)cells.shift();
     if(level==='school')cells.push(escapeHtml(row.items[0].udise||'Not provided'));
     if(row.kind==='pending'){cells.push(String(row.pending));while(cells.length<columns.length)cells.push('—');return '<tr>'+cells.map(value=>'<td>'+value+'</td>').join('')+'</tr>';}
     if(showSchools)cells.push(String(schoolCount));
     if(isCoverage){if(level==='state')cells.push(String(new Set(row.items.map(s=>s.district)).size),String(new Set(row.items.map(s=>s.district+'|'+s.block)).size));else if(level==='district')cells.push(String(new Set(row.items.map(s=>s.block)).size));else if(level==='school')cells.push(String(metrics.devices));else if(level==='device')cells.push(escapeHtml(row.device.makeModel),getMdmHealthDevices(row.items)[0]?.online?'Online':'Offline');}
     else if(view==='view-device')cells.push(...(level==='device'?[getMdmHealthDevices(row.items)[0]?.online?'Online':'Offline',metrics.hours.toFixed(2)+' hrs',String(metrics.sessions),String(metrics.open)]:[String(metrics.devices),String(metrics.active),metrics.activity+'%',metrics.hours.toFixed(2)+' hrs']));
-    else if(view==='view-app')cells.push(...(level==='device'?[metrics.hours.toFixed(2)+' hrs',String(metrics.sessions),getMdmHealthDevices(row.items)[0]?.online?'Online':'Offline']:[String(metrics.devices),metrics.hours.toFixed(2)+' hrs',String(metrics.sessions)]));
+    else if(view==='view-app'){
+      const b=calculateAppBreakdown(row.label, row.key, metrics.hours);
+      cells.push(
+        String(metrics.devices),
+        formatAppPill('yt', b.yt),
+        formatAppPill('br', b.br),
+        formatAppPill('of', b.of),
+        formatAppPill('sb', b.sb),
+        formatAppPill('nt', b.nt),
+        formatAppPill('ot', b.ot, metrics.hours, row.label),
+        '<span class="app-usage-hours"><i class="bi bi-clock me-1 text-muted"></i>'+b.hrs+'</span>'
+      );
+    }
     else if(view==='view-content')cells.push(...(level==='device'?[metrics.contentHours.toFixed(2)+' hrs',String(metrics.views),String(metrics.contentSessions)]:[String(metrics.devices),metrics.contentHours.toFixed(2)+' hrs',String(metrics.views)]));
     else cells.push(...(level==='device'?[String(metrics.open),String(metrics.resolved),metrics.open?'Pending':'No open ticket']:[String(metrics.devices),String(metrics.open),String(metrics.resolved)]));
     if(isState&&!isCoverage&&schoolCount>metrics.schools)cells[1]+='<small class="national-pending-note">'+metrics.schools+' details available; '+(schoolCount-metrics.schools)+' pending</small>';

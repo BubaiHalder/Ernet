@@ -1,4 +1,4 @@
-﻿/* Isolated overview training card. All training records below are illustrative. */
+/* Isolated overview training card. All training records below are illustrative. */
 (() => {
   'use strict';
   const legacy = document.getElementById('summaryActivity');
@@ -14,7 +14,7 @@
   card.appendChild(metrics);
   card.setAttribute('aria-label','Open teacher and student training details');
   const style = document.createElement('style');
-  style.textContent = `.training-card-counts{margin-top:15px}.training-card-counts>strong{margin:0 0 2px}.training-card-counts>span{font-size:11px;color:var(--muted)}.training-card-secondary{display:flex;gap:18px;margin-top:13px;font-size:11px;color:var(--muted)}.training-card-secondary b{display:block;font-size:17px;color:var(--ink)}#trainingCardDialog:not([open]){display:none}#trainingCardDialog .training-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}#trainingCardDialog .training-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}#trainingCardDialog .training-toolbar input{max-width:330px}@media(max-width:650px){#trainingCardDialog .training-charts{grid-template-columns:1fr}}`;
+  style.textContent = `.training-card-counts{margin-top:15px}.training-card-counts>strong{margin:0 0 2px;white-space:nowrap;display:block}.training-card-counts>span{font-size:11px;color:var(--muted);display:block}.training-card-secondary{display:flex;gap:18px;margin-top:13px;font-size:11px;color:var(--muted)}.training-card-secondary b{display:block;font-size:17px;color:var(--ink)}#trainingCardDialog:not([open]){display:none}#trainingCardDialog .training-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}#trainingCardDialog .training-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}#trainingCardDialog .training-toolbar input{max-width:330px}@media(max-width:650px){#trainingCardDialog .training-charts{grid-template-columns:1fr}}`;
   document.head.appendChild(style);
   const dialog = document.createElement('dialog');
   dialog.id = 'trainingCardDialog';
@@ -50,7 +50,7 @@
   }
   function update(){
     records=buildRecords();const t=totals(records);
-    metrics.innerHTML='<strong>'+fmt(t.teachers)+'</strong><span>Teachers · sample data</span><div class="training-card-secondary"><span><b>'+fmt(t.schools)+'</b>Schools</span><span><b>'+fmt(t.students)+'</b>Students</span></div>';
+    metrics.innerHTML='<strong>'+fmt(t.teachers)+' <span style="font-size:13px;font-weight:500;color:var(--muted);vertical-align:baseline;margin-left:4px;">school</span></strong><span>Teachers · students</span><div class="training-card-secondary"><span><b>'+fmt(t.schools)+'</b>Schools</span><span><b>'+fmt(t.students)+'</b>Students</span></div>';
     if(dialog.open)renderPopup();
   }
   card.onclick=()=>window.openDashboardDetail('training');
