@@ -311,3 +311,18 @@ renderTeacherTrainingTable = function () {
   };
 updateWorkspaceHeading(currentView);
 render();
+try {
+  const savedUserName = sessionStorage.getItem('ernet_user_name');
+  const savedUserRole = sessionStorage.getItem('ernet_user_role');
+  if (savedUserName) {
+    const sessionCopy = document.getElementById('headerSessionCopy');
+    const avatar = document.getElementById('headerAvatar');
+    if (sessionCopy) {
+      sessionCopy.innerHTML = `${savedUserName}<small>${savedUserRole || 'Demonstration workspace'}</small>`;
+    }
+    if (avatar) {
+      const initials = savedUserName.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+      if (initials) avatar.textContent = initials;
+    }
+  }
+} catch (_) {}

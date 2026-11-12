@@ -13,6 +13,37 @@ body > .navbar-custom { height:78px; padding:14px 30px!important; border-radius:
 .avatar { background:#e8eef8; color:#315580!important; border-radius:50%; width:34px; height:34px; display:grid; place-items:center; font-size:11px; font-weight:700; }
 .session-copy { font-size:11px; line-height:1.4; }
 .session-copy small { display:block; color:var(--muted)!important; font-size:10px; }
+.btn-signout,
+html[data-theme] body.professional-dashboard .navbar-custom .btn-signout {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  padding: 5px 12px !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
+  transition: all .2s ease !important;
+  cursor: pointer !important;
+}
+.btn-signout span,
+.btn-signout i,
+html[data-theme] body.professional-dashboard .navbar-custom .btn-signout span,
+html[data-theme] body.professional-dashboard .navbar-custom .btn-signout i {
+  color: #000000 !important;
+}
+.btn-signout:hover,
+html[data-theme] body.professional-dashboard .navbar-custom .btn-signout:hover {
+  background-color: #f3f4f6 !important;
+  color: #000000 !important;
+  border-color: #9ca3af !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18) !important;
+}
 body > .container-fluid { margin-left:224px; width:calc(100% - 224px); max-width:1600px!important; padding:26px 32px 40px!important; }
 #mainTabs { position:absolute; top:78px; left:0; bottom:auto; min-height:calc(100vh - 78px); width:224px; display:flex; flex-direction:column; flex-wrap:nowrap; align-items:stretch; padding:26px 14px; gap:5px; margin:0!important; border:0!important; border-right:1px solid var(--line)!important; background:var(--surface)!important; }
 #mainTabs > li { flex-shrink:0; min-width:0; }
