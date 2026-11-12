@@ -72,15 +72,145 @@
   matchCount.after(filterNavigation);
   const filterStyle=document.createElement('style');
   filterStyle.textContent=`
-    #advancedFilterDialog{width:min(820px,95vw)}
-    #advancedFilterDialog .multi-filter-grid{display:block}
-    #advancedFilterDialog .multi-filter-column[hidden]{display:none!important}
-    #advancedFilterDialog .multi-filter-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;align-content:start;height:310px}
-    #advancedFilterDialog .multi-filter-column{background:var(--surface);padding:16px}
-    .location-filter-navigation{display:flex;gap:6px;margin:0 0 14px;padding:5px;border-radius:12px;background:var(--surface-sub)}
-    .location-filter-navigation button{flex:1;padding:10px 6px;border:0;border-radius:8px;background:transparent;color:var(--muted);font:600 12px inherit;cursor:pointer}
-    .location-filter-navigation button[aria-pressed=true]{background:var(--cyan-bg);color:var(--cyan);box-shadow:0 1px 4px #0001}
-    @media(max-width:575px){#advancedFilterDialog .multi-filter-options{grid-template-columns:1fr;height:260px}.location-filter-navigation button{font-size:11px}}
+    #advancedFilterDialog {
+      width: min(680px, 94vw) !important;
+      max-width: 680px !important;
+      overflow: hidden !important;
+      border-radius: 12px !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25) !important;
+    }
+    #advancedFilterDialog #filterForm {
+      overflow: hidden !important;
+      margin: 0 !important;
+    }
+    #advancedFilterDialog .filter-popup-header {
+      padding: 10px 16px !important;
+      border-bottom: 1px solid var(--line) !important;
+    }
+    #advancedFilterDialog .filter-popup-header h2 {
+      font-size: 14.5px !important;
+      margin: 0 !important;
+      line-height: 1.2 !important;
+    }
+    #advancedFilterDialog .filter-popup-header p {
+      font-size: 11px !important;
+      margin: 2px 0 0 !important;
+      color: var(--muted) !important;
+    }
+    #advancedFilterDialog .filter-popup-header .compact-close-btn {
+      font-size: 13px !important;
+      padding: 4px !important;
+    }
+    #advancedFilterDialog .filter-popup-body {
+      padding: 8px 16px 10px !important;
+      overflow: hidden !important;
+    }
+    #advancedFilterDialog .multi-match-count {
+      padding: 4px 10px !important;
+      margin: 0 0 6px !important;
+      font-size: 10px !important;
+      border-radius: 6px !important;
+      line-height: 1.3 !important;
+    }
+    #advancedFilterDialog .location-filter-navigation {
+      display: flex !important;
+      gap: 4px !important;
+      margin: 0 0 6px !important;
+      padding: 3px !important;
+      border-radius: 8px !important;
+      background: var(--surface-sub) !important;
+    }
+    #advancedFilterDialog .location-filter-navigation button {
+      flex: 1 !important;
+      padding: 4px 6px !important;
+      border: 0 !important;
+      border-radius: 6px !important;
+      background: transparent !important;
+      color: var(--muted) !important;
+      font: 600 11px inherit !important;
+      cursor: pointer !important;
+    }
+    #advancedFilterDialog .location-filter-navigation button[aria-pressed=true] {
+      background: var(--cyan-bg) !important;
+      color: var(--cyan) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+    #advancedFilterDialog .multi-filter-grid {
+      display: block !important;
+      margin: 0 !important;
+    }
+    #advancedFilterDialog .multi-filter-column {
+      background: var(--surface) !important;
+      padding: 6px 10px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 8px !important;
+    }
+    #advancedFilterDialog .multi-filter-column[hidden] {
+      display: none !important;
+    }
+    #advancedFilterDialog .multi-filter-heading {
+      display: none !important;
+    }
+    #advancedFilterDialog .multi-filter-column input[type="search"] {
+      height: 28px !important;
+      padding: 2px 8px !important;
+      font-size: 11px !important;
+      border-radius: 6px !important;
+      margin-bottom: 4px !important;
+    }
+    #advancedFilterDialog .multi-select-actions {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin: 4px 0 !important;
+      font-size: 10.5px !important;
+    }
+    #advancedFilterDialog .multi-filter-options {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 3px !important;
+      align-content: start !important;
+      height: 180px !important;
+      max-height: 180px !important;
+      overflow-y: auto !important;
+      scrollbar-width: thin !important;
+    }
+    #advancedFilterDialog .multi-option {
+      padding: 4px 6px !important;
+      min-height: 26px !important;
+      border-radius: 5px !important;
+    }
+    #advancedFilterDialog .multi-option-label strong {
+      font-size: 10.5px !important;
+      line-height: 1.25 !important;
+    }
+    #advancedFilterDialog .multi-option-label small {
+      font-size: 9px !important;
+      line-height: 1.2 !important;
+      margin-top: 1px !important;
+    }
+    #advancedFilterDialog .filter-popup-footer {
+      padding: 8px 16px !important;
+      background: var(--surface-sub) !important;
+      border-top: 1px solid var(--line) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+    }
+    #advancedFilterDialog .filter-popup-footer > span {
+      font-size: 10px !important;
+      color: var(--muted) !important;
+    }
+    #advancedFilterDialog .filter-popup-footer button {
+      padding: 4px 14px !important;
+      font-size: 11px !important;
+      height: 29px !important;
+      border-radius: 6px !important;
+    }
+    @media(max-width:575px){
+      #advancedFilterDialog .multi-filter-options{grid-template-columns:1fr !important; height:150px !important;}
+      #advancedFilterDialog .location-filter-navigation button{font-size:10px !important;}
+    }
   `;
   document.head.appendChild(filterStyle);
   ['state', 'district', 'block', 'school'].forEach(kind => {

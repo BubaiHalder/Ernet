@@ -1,4 +1,4 @@
-﻿/* Navigation history and summary-card detail popups for the dashboard demo. */
+/* Navigation history and summary-card detail popups for the dashboard demo. */
 'use strict';
 (() => {
   const style = document.createElement('style');
@@ -48,7 +48,7 @@
   const reportsButton = heading?.querySelector('button');
   const historyControls = document.createElement('div');
   historyControls.className = 'navigation-history-controls';
-  historyControls.innerHTML = '<button id="dashboardBackButton" type="button" aria-label="Go back" title="Go back" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i><span>Back</span></button><button id="dashboardForwardButton" type="button" aria-label="Go forward" title="Go forward" disabled><span>Forward</span><i class="bi bi-arrow-right" aria-hidden="true"></i></button>';
+  historyControls.innerHTML = '<button id="dashboardBackButton" type="button" aria-label="Go to front page" title="Go to front page"><i class="bi bi-arrow-left" aria-hidden="true"></i><span>Back</span></button><button id="dashboardForwardButton" type="button" aria-label="Go forward" title="Go forward" disabled><span>Forward</span><i class="bi bi-arrow-right" aria-hidden="true"></i></button>';
   if (heading) heading.insertBefore(historyControls, reportsButton || null);
 
   const detailDialog = document.createElement('dialog');
@@ -82,9 +82,8 @@
   const originalSwitchTab = switchTab;
 
   function updateHistoryButtons() {
-    const backDisabled = routeIndex <= 0;
     const forwardDisabled = routeIndex >= routes.length - 1;
-    ['dashboardBackButton','detailBackButton'].forEach(id => { const button=document.getElementById(id); if(button)button.disabled=backDisabled; });
+    ['dashboardBackButton','detailBackButton'].forEach(id => { const button=document.getElementById(id); if(button)button.disabled=false; });
     ['dashboardForwardButton','detailForwardButton'].forEach(id => { const button=document.getElementById(id); if(button)button.disabled=forwardDisabled; });
   }
   function sameRoute(a,b){return Boolean(a&&b&&a.type===b.type&&(a.type==='view'?a.id===b.id:a.key===b.key));}
@@ -123,8 +122,8 @@
 
   const columnSets = {
     states: {title:'State overview', subtitle:'School and device totals for the selected scope.', columns:['State','Schools','Teaching devices','Active devices','Devices usage %','Avg. daily usage / device','Open tickets']},
-    schools: {title:'Schools in this view', subtitle:'School level metrics for the selected geography and date range.', columns:['School','State','District','UDISE','Teaching devices','Active devices','Avg. usage / device (h)','Open tickets']},
-    training: {title:'Teachers trained', subtitle:'Illustrative training records for the selected geography and date range.', columns:['School','State','District','UDISE','Training date','Teachers trained','Students trained']},
+    schools: {title:'Schools', subtitle:'School level metrics for the selected geography and date range.', columns:['School','State','District','UDISE','Teaching devices','Active devices','Avg. usage / device (h)','Open tickets']},
+    training: {title:'Training', subtitle:'Illustrative training records for the selected geography and date range.', columns:['School','State','District','UDISE','Training date','Teachers trained','Students trained']},
     devices: {title:'Teaching devices', subtitle:'Device inventory and status for the selected schools.', columns:['Device serial','School','State','Status','Usage hours','Open tickets']},
     activity: {title:'Device activity', subtitle:'Sample activity metrics for devices in the selected scope and date range.', columns:['Device serial','School','State','Activity','Usage hours','Sessions']},
   };
@@ -213,7 +212,7 @@
       return;
     }else if(key==='training'){
       const teachers=rows.reduce((sum,row)=>sum+Number(row[5]),0),students=rows.reduce((sum,row)=>sum+Number(row[6]),0),schools=new Set(rows.map(row=>row[0])).size;
-      kpis=[['Schools with training',schools.toLocaleString('en-IN')],['Teachers trained',teachers.toLocaleString('en-IN')],['Students trained',students.toLocaleString('en-IN')]];
+      kpis=[['Schools with training',teachers.toLocaleString('en-IN')],['Teachers trained',schools.toLocaleString('en-IN')],['Students trained',students.toLocaleString('en-IN')]];
       const groups=new Map();rows.forEach(row=>groups.set(row[1],(groups.get(row[1])||0)+Number(row[5])));
       bars=[...groups].map(([label,value])=>({label,value,display:value.toLocaleString('en-IN')})).sort((a,b)=>b.value-a.value);
       title='Teachers trained by state';caption='Illustrative training records in the selected period.';
@@ -286,7 +285,25 @@
     applyingRoute=false;
     updateHistoryButtons();
   }
-  window.dashboardGoBack=function(){if(routeIndex<=0)return;routeIndex--;applyRoute(routes[routeIndex]);};
+  function goToFrontPageTop() {
+    closeDetailPopup();
+    pushRoute({ type: 'view', id: 'view-overview' });
+    originalSwitchTab('view-overview');
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const container = document.querySelector('.container-fluid');
+    if (container) {
+      container.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      container.scrollTop = 0;
+    }
+    const topSection = document.querySelector('.workspace-heading') || document.querySelector('.navbar-custom') || document.getElementById('view-overview');
+    if (topSection) {
+      topSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    updateHistoryButtons();
+  }
+  window.dashboardGoBack = goToFrontPageTop;
   window.dashboardGoForward=function(){if(routeIndex>=routes.length-1)return;routeIndex++;applyRoute(routes[routeIndex]);};
   window.openDashboardDetail=function(key){schoolPage=1;tableSort={column:-1,direction:1};pushRoute({type:'detail',key});applyRoute(routes[routeIndex]);};
   window.exportDashboardDetail=function(format){

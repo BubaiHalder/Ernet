@@ -2,13 +2,13 @@
 'use strict';
 
 const WORKSPACE_PAGES = {
-  'view-overview': ['Programme overview', 'A central view of device activity, learning resource usage, and school performance.'],
-  'view-device': ['Device monitoring', 'Explore device activity by district, zone, school, and classroom.'],
-  'view-app': ['Application usage', 'Understand how classroom applications are used across the selected schools.'],
-  'view-content': ['Learning content', 'Explore subject, class, school, and teacher usage, with downloadable reports.'],
-  'view-reports': ['Reports & analytics', 'Access device uptime, content usage, training, and operational reports.'],
-  'view-complaints': ['Support tickets', 'Review sample complaints and school support activity.'],
-  'view-audit': ['Activity logs', 'Review sample user events and exports from this demonstration session.'],
+  'view-overview': ['Programme overview', ''],
+  'view-device': ['Device monitoring', ''],
+  'view-app': ['Application usage', ''],
+  'view-content': ['Learning content', ''],
+  'view-reports': ['Reports & analytics', ''],
+  'view-complaints': ['Support tickets', ''],
+  'view-audit': ['Activity logs', ''],
 };
 
 function updateWorkspaceHeading(viewId) {

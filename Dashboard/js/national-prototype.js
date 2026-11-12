@@ -171,7 +171,7 @@ render = function () {
   document.getElementById('summaryActivity').textContent=metrics.devices?metrics.activity+'%':'—';
   document.getElementById('summaryTickets').textContent=metrics.open.toLocaleString('en-IN');
   const target=nationalTargetCount(states,scope);
-  document.getElementById('nationalDataNote').textContent=nationalPath.school?'Device and usage figures for this school are dummy data.':'School details available: '+scope.length+' of '+target+'. Device and usage figures are dummy data.';
+  const noteEl=document.getElementById('nationalDataNote');if(noteEl){noteEl.textContent='';noteEl.hidden=true;}
   renderNationalTable(currentView,scope);
   if(currentView==='view-overview'){nationalRenderOverview(scope,metrics);document.getElementById('nationalPerformanceCard').hidden=true;}
   if(currentView==='view-device') {
@@ -214,7 +214,7 @@ renderSpecs=function(scope){
   document.getElementById('specsTbody').innerHTML=scope.slice(0,10).flatMap(s=>s.rec.devices.map(d=>'<tr>'+[s.name+' / '+d.serial,d.makeModel,d.proc,d.ramStorage,d.os+' / '+d.fw,d.net,d.serial,d.instDate,d.war].map(value=>'<td>'+escapeHtml(value)+'</td>').join('')+'</tr>')).join('');
 };
 renderNationalStateSelector();
-WORKSPACE_PAGES['view-device']=['Device monitoring','Explore device activity by state, district, block, school, and device.'];
+WORKSPACE_PAGES['view-device']=['Device monitoring',''];
 render();
 function renderNationalPerformance(scope) {
   const distinctStates=new Set(scope.map(s=>s.state));

@@ -151,7 +151,7 @@ table.data-table td {
 </style>
 
 
-<link href="css/professional.css?v=20261014-app-toolbar" rel="stylesheet">
+<link href="css/professional.css?v=20261110-v9" rel="stylesheet">
 <link href="css/performance-rankings.css?v=20261014-rankings" rel="stylesheet">
 <link href="css/content-analytics.css?v=20261014-content-back" rel="stylesheet">
 <link href="css/ernet-client-logo.css?v=20261014-logo" rel="stylesheet">
@@ -181,7 +181,7 @@ table.data-table td {
 <div class="container-fluid px-3 px-md-4" style="max-width:1300px;">
 
   <!-- Breadcrumb Navigation -->
-  <div class="breadcrumb-nav mt-3">
+  <div class="breadcrumb-nav mt-3" style="display:none !important;">
     <nav aria-label="breadcrumb" class="w-100">
       <ol class="breadcrumb mb-0" id="navBreadcrumb">
         <li class="breadcrumb-item"><a onclick="navigateBreadcrumb('HOME')">Home</a></li>
@@ -191,15 +191,15 @@ table.data-table td {
 
 
   <header class="workspace-heading">
-    <div><p class="eyebrow">ERNET India / Digital classrooms</p><h1 id="workspaceTitle">Programme overview</h1><p id="workspaceSubtitle">A central view of device activity, learning resource usage, and school performance.</p></div>
-    <button class="heading-action" type="button" onclick="switchTab('view-reports')"><i class="bi bi-download me-2"></i>Open reports</button>
+    <div><p class="eyebrow">ERNET India / Digital classrooms</p><h1 id="workspaceTitle">Programme overview</h1><p id="workspaceSubtitle"></p></div>
+
   </header>
   <div id="compactFilterBar" class="compact-filter-bar" aria-label="Dashboard filters"><button id="filterToggleBtn" type="button" class="heading-action compact-filter-toggle" aria-controls="advancedFilterDialog" aria-expanded="false" onclick="toggleAdvancedFilters()"><i class="bi bi-sliders me-2"></i>Filters <span id="filterAppliedCount" class="filter-count" hidden></span></button><div id="activeFilterChips" class="active-filter-chips"></div><span id="compactDateRange" class="compact-date-range"></span><div class="compact-period-buttons" aria-label="Date shortcuts"><button type="button" class="period-btn" data-period="1" aria-pressed="true" onclick="setUsagePeriod(1)">Daily</button><button type="button" class="period-btn" data-period="7" aria-pressed="false" onclick="setUsagePeriod(7)">Weekly</button><button type="button" class="period-btn" data-period="30" aria-pressed="false" onclick="setUsagePeriod(30)">Monthly</button></div><button id="resetBtn" type="button" class="compact-clear-btn" hidden>Clear all</button></div>
   <dialog id="advancedFilterDialog" class="filter-popup" aria-labelledby="advancedFilterTitle"><form id="filterForm"><header class="filter-popup-header"><div><h2 id="advancedFilterTitle">Filter dashboard</h2><p>Select one or more states, districts, blocks, and schools.</p></div><button type="button" class="compact-close-btn" aria-label="Cancel and close filters" onclick="closeMultiFilterPopup()"><i class="bi bi-x-lg"></i></button></header><div class="filter-popup-body"><div class="multi-filter-grid"><section class="multi-filter-column" aria-label="Select states"><div class="multi-filter-heading"><h3>States</h3><span id="multiCount-state"></span></div><input id="multiSearch-state" class="form-control" type="search" placeholder="Search states" aria-label="Search states" oninput="renderMultiList('state')"><div class="multi-select-actions"><label><input id="multiAll-state" type="checkbox" onchange="selectAllMulti('state',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('state',false)">Clear</button></div><div id="multiOptions-state" class="multi-filter-options"></div></section><section class="multi-filter-column" aria-label="Select districts"><div class="multi-filter-heading"><h3>Districts</h3><span id="multiCount-district"></span></div><input id="multiSearch-district" class="form-control" type="search" placeholder="Search districts" aria-label="Search districts" oninput="renderMultiList('district')"><div class="multi-select-actions"><label><input id="multiAll-district" type="checkbox" onchange="selectAllMulti('district',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('district',false)">Clear</button></div><div id="multiOptions-district" class="multi-filter-options"></div></section><section class="multi-filter-column" aria-label="Select blocks"><div class="multi-filter-heading"><h3>Blocks</h3><span id="multiCount-block"></span></div><input id="multiSearch-block" class="form-control" type="search" placeholder="Search blocks" aria-label="Search blocks" oninput="renderMultiList('block')"><div class="multi-select-actions"><label><input id="multiAll-block" type="checkbox" onchange="selectAllMulti('block',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('block',false)">Clear</button></div><div id="multiOptions-block" class="multi-filter-options"></div></section><section class="multi-filter-column" aria-label="Select schools"><div class="multi-filter-heading"><h3>Schools</h3><span id="multiCount-school"></span></div><input id="multiSearch-school" class="form-control" type="search" placeholder="Search schools" aria-label="Search schools" oninput="renderMultiList('school')"><div class="multi-select-actions"><label><input id="multiAll-school" type="checkbox" onchange="selectAllMulti('school',this.checked)"> Select all</label><button type="button" onclick="selectAllMulti('school',false)">Clear</button></div><div id="multiOptions-school" class="multi-filter-options"></div></section></div><div class="multi-date-row"><div><label class="filter-label" for="filterFromDate">From date</label><input class="form-control" id="filterFromDate" type="date" required></div><div><label class="filter-label" for="filterToDate">To date</label><input class="form-control" id="filterToDate" type="date" required></div><p id="filterMatchCount"></p></div><p id="filterValidationMessage" class="filter-validation" role="alert" hidden></p></div><footer class="filter-popup-footer"><span>Changes apply when you select Apply filters.</span><div class="d-flex gap-2"><button class="heading-action" type="button" onclick="closeMultiFilterPopup()">Cancel</button><button class="btn btn-apply" type="submit">Apply filters</button></div></footer></form></dialog>
   <div hidden><form id="legacyFilterState"><select id="stateSelect"><option value="ALL">All states</option></select><details id="nationalStateDropdown"><summary id="stateFilterSummary"></summary><input id="stateAllCheckbox" type="checkbox"><div id="stateOptions"></div></details><select id="districtSelect"><option value="ALL">All districts</option></select><select id="zoneSelect"><option value="ALL">All blocks</option></select><select id="schoolSelect"><option value="ALL">All schools</option></select><input type="date" id="fromDate"><input type="date" id="toDate"><input type="hidden" id="schoolIdFilter"></form></div>
 
   <p id="adminScopeLabel" class="admin-scope-label"></p>
-  <p id="nationalDataNote" class="section-sub mb-3"></p>
+  <p id="nationalDataNote" class="section-sub mb-3" style="display:none !important;" hidden></p>
   <!-- Tabs -->
   <ul class="nav nav-tabs" id="mainTabs" aria-label="Main navigation">
 <li class="sidebar-controls"><span class="sidebar-workspace-label">Workspace</span><button id="sidebarToggle" type="button" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="mainTabs"><i class="bi bi-layout-sidebar-inset" aria-hidden="true"></i></button></li>
@@ -216,11 +216,11 @@ table.data-table td {
   <!-- VIEW: OVERVIEW -->
   <div id="view-overview" class="view-section active">
     <div class="summary-strip national-summary-strip" aria-label="Selected scope summary">
-      <button type="button" class="summary-stat summary-action-card" onclick="nationalShowStates()"><div class="stat-label">States in this view<i class="bi bi-map"></i></div><strong id="summaryStates">—</strong><small>View state-wise school metrics</small></button>
-      <button type="button" class="summary-stat summary-action-card" onclick="openSchoolRankings()" aria-label="Open Performance Overview and School Rankings"><div class="stat-label">Schools in this view<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>View performance and school rankings</small></button>
+      <button type="button" class="summary-stat summary-action-card" onclick="nationalShowStates()"><div class="stat-label">States<i class="bi bi-map"></i></div><strong id="summaryStates">—</strong><small>View state-wise school metrics</small></button>
+      <button type="button" class="summary-stat summary-action-card" onclick="openSchoolRankings()" aria-label="Open Performance Overview and School Rankings"><div class="stat-label">Schools<i class="bi bi-buildings"></i></div><strong id="summarySchools">—</strong><small>View performance and school rankings</small></button>
       <button type="button" class="summary-stat summary-action-card" onclick="switchTab('view-device')" aria-label="Open teaching device monitoring"><div class="stat-label">Teaching devices<i class="bi bi-display"></i></div><strong id="summaryDevices">—</strong><small>View teaching devices in this scope</small></button>
-      <button type="button" class="summary-stat summary-action-card" onclick="switchTab('view-device')"><div class="stat-label">Device activity<i class="bi bi-activity"></i></div><strong id="summaryActivity">—</strong><small>View state-to-device activity</small></button>
       <button type="button" class="summary-stat summary-action-card" onclick="openSupportTicketExplorer()" aria-label="Search open support tickets"><div class="stat-label">Open support tickets<i class="bi bi-chat-square-text"></i></div><strong id="summaryTickets">—</strong><small>Search tickets by ID or school</small></button>
+      <button type="button" class="summary-stat summary-action-card training-modern-card" onclick="openDashboardDetail('training')" aria-label="Open training details"><div class="stat-label">Training<i class="bi bi-mortarboard"></i></div><strong id="summaryActivity" style="display:none !important;" hidden></strong><div class="training-card-counts"><div class="training-hero-row"><span class="training-hero-num" id="trainingCardSchoolCount">243</span> <span class="training-hero-label">Schools</span></div><div class="training-capsules"><span class="training-chip"><i class="bi bi-person-video3"></i><b id="trainingCardTeacherCount">28</b> Teachers</span><span class="training-chip"><i class="bi bi-people-fill"></i><b id="trainingCardStudentCount">3,171</b> Students</span></div></div></button>
     </div>
 
     <div class="d-flex align-items-center justify-content-between mt-2 mb-3 flex-wrap gap-2">
@@ -265,7 +265,7 @@ table.data-table td {
       <!-- Box 2: Application usage -->
       <div class="col-12 col-sm-6 col-xl-3">
         <div class="card-surface p-2 h-100 d-flex flex-column kpi-card-highlight" onclick="switchTab('view-app')" role="button" tabindex="0">
-          <div class="d-flex align-items-start justify-content-between mb-1">
+          <div class="d-flex align-items-start justify-content-between mb-2">
             <div>
               <div class="kpi-label font-display">Application usage</div>
               <div class="kpi-total font-mono" style="font-size:11px; font-weight:600; color:var(--amber);">Top 5 Apps</div>
@@ -4538,9 +4538,9 @@ function renderAuditLogsTable() {
 function exportAuditLogs(format) {
   addAuditLogEntry(`Exported Audit Logs in ${format.toUpperCase()} format`);
   if (format === 'excel') {
-    let csv = 'Timestamp,User Email,Role,Activity Log,IP Address,Security Status\n';
+    let csv = 'Timestamp,User Email,Role,Activity Log,IP Address\n';
     AUDIT_LOGS.forEach(row => {
-      csv += `"${row.time}","${row.user}","${row.role}","${row.action.replace(/"/g, '""')}","${row.ip}","${row.status}"\n`;
+      csv += `"${row.time}","${row.user}","${row.role}","${row.action.replace(/"/g, '""')}","${row.ip}"\n`;
     });
     downloadCsvFile(csv, 'ERNET_Audit_Logs_Report.csv');
   } else {
@@ -5071,18 +5071,18 @@ if (typeof window !== 'undefined' && typeof window.addEventListener === 'functio
 }
 </script>
 <script src="js/school-data.js"></script>
-<script src="js/professional.js"></script>
+<script src="js/professional.js?v=20261110-v14"></script>
 <script src="js/mdm-prototype.js"></script>
 <script src="js/india-map-data.js"></script>
 <script src="js/india-district-map-data.js?v=20261014-district"></script>
-<script src="js/national-prototype.js?v=20261014-module-back"></script>
+<script src="js/national-prototype.js?v=20261110-v10"></script>
 <script src="js/compact-filters.js"></script>
 <script src="js/performance-rankings.js?v=20261014-rankings"></script>
 <script src="js/content-analytics.js?v=20261014-content-back"></script>
 <script src="js/workspace-shell.js?v=20261014-phone"></script>
 <script src="js/observation-updates.js?v=20261104-3"></script>
-<script src="js/navigation-updates.js?v=20261104-3"></script>
-<script src="js/training-card.js?v=20261104-2"></script>
+<script src="js/navigation-updates.js?v=20261110-v9"></script>
+<script src="js/training-card.js?v=20261110-v8"></script>
 <script src="js/device-monitor-insights.js?v=20261105-compact"></script>
 </body>
 </html>

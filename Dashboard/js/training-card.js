@@ -4,23 +4,46 @@
   const legacy = document.getElementById('summaryActivity');
   const card = legacy?.closest('button');
   if (!card) return;
-  // Retain the existing metric target for older dashboard renderers.
-  legacy.hidden = true;
-  legacy.style.display = 'none';
-  card.querySelector('.stat-label').innerHTML = 'Teachers trained<i class="bi bi-mortarboard" aria-hidden="true"></i>';
-  card.querySelector('small').remove();
-  const metrics = document.createElement('div');
-  metrics.className = 'training-card-counts';
-  card.appendChild(metrics);
-  card.setAttribute('aria-label','Open teacher and student training details');
+  // Retain the existing metric target for older dashboard renderers without displaying it.
+  if (legacy) {
+    legacy.hidden = true;
+    legacy.style.setProperty('display', 'none', 'important');
+    legacy.textContent = '';
+  }
+  card.classList.add('training-modern-card');
+  const statLabel = card.querySelector('.stat-label');
+  if (statLabel) {
+    statLabel.innerHTML = 'Training<i class="bi bi-mortarboard" aria-hidden="true"></i>';
+  }
+  card.querySelector('small')?.remove();
+  let metrics = card.querySelector('.training-card-counts');
+  if (!metrics) {
+    metrics = document.createElement('div');
+    metrics.className = 'training-card-counts';
+    card.appendChild(metrics);
+  }
+  card.setAttribute('aria-label', 'Open training details');
   const style = document.createElement('style');
-  style.textContent = `.training-card-counts{margin-top:15px}.training-card-counts>strong{margin:0 0 2px;white-space:nowrap;display:block}.training-card-counts>span{font-size:11px;color:var(--muted);display:block}.training-card-secondary{display:flex;gap:18px;margin-top:13px;font-size:11px;color:var(--muted)}.training-card-secondary b{display:block;font-size:17px;color:var(--ink)}#trainingCardDialog:not([open]){display:none}#trainingCardDialog .training-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}#trainingCardDialog .training-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}#trainingCardDialog .training-toolbar input{max-width:330px}@media(max-width:650px){#trainingCardDialog .training-charts{grid-template-columns:1fr}}`;
+  style.textContent = `
+    .training-card-counts{display:flex;flex-direction:column;justify-content:space-between;margin:0!important;flex:1}
+    .training-card-counts>strong{margin:2px 0 2px!important;white-space:nowrap;display:flex!important;align-items:baseline!important;gap:4px!important;font-size:22px!important;font-weight:700!important;letter-spacing:-.03em!important;line-height:1.15!important;color:var(--ink)!important}
+    .training-card-counts>strong span{font-size:11px!important;font-weight:500!important;color:var(--muted)!important;letter-spacing:normal!important;vertical-align:baseline!important}
+    .training-card-secondary{display:flex!important;align-items:center!important;gap:6px!important;margin-top:2px!important;font-size:9.5px!important;color:var(--muted)!important;line-height:1.25!important;white-space:nowrap!important}
+    .training-card-secondary span{display:inline-flex!important;align-items:baseline!important;gap:3px!important;font-size:9.5px!important}
+    .training-card-secondary b{display:inline!important;font-size:11px!important;font-weight:700!important;color:var(--ink)!important}
+    .training-card-secondary .training-dot{display:inline!important;opacity:.4!important;font-size:8px!important}
+    #trainingCardDialog:not([open]){display:none}
+    #trainingCardDialog .training-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    #trainingCardDialog .training-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+    #trainingCardDialog .training-toolbar input{max-width:330px}
+    @media(max-width:650px){#trainingCardDialog .training-charts{grid-template-columns:1fr}}
+  `;
   document.head.appendChild(style);
   const dialog = document.createElement('dialog');
   dialog.id = 'trainingCardDialog';
   dialog.className = 'dashboard-detail-popup';
   dialog.setAttribute('aria-labelledby','trainingCardTitle');
-  dialog.innerHTML = `<header class="dashboard-detail-header"><div><h2 id="trainingCardTitle">Teacher & student training</h2><p id="trainingCardScope"></p></div><div class="detail-header-actions"><button type="button" class="heading-action" data-export="excel">Excel</button><button type="button" class="heading-action" data-export="pdf">PDF</button><button type="button" class="heading-action" data-close>Back to overview</button></div></header><div class="dashboard-detail-body"><p class="dashboard-detail-note">Illustrative training cohorts. Counts represent participants in the selected period.</p><div class="training-toolbar"><input id="trainingCardSearch" class="form-control" type="search" aria-label="Search training records" placeholder="Search school, state, district or UDISE"></div><div id="trainingCardResults"></div></div>`;
+  dialog.innerHTML = `<header class="dashboard-detail-header"><div><h2 id="trainingCardTitle">Training</h2><p id="trainingCardScope"></p></div><div class="detail-header-actions"><button type="button" class="heading-action" data-export="excel">Excel</button><button type="button" class="heading-action" data-export="pdf">PDF</button><button type="button" class="heading-action" data-close>Back to overview</button></div></header><div class="dashboard-detail-body"><p class="dashboard-detail-note">Illustrative training cohorts. Counts represent participants in the selected period.</p><div class="training-toolbar"><input id="trainingCardSearch" class="form-control" type="search" aria-label="Search training records" placeholder="Search school, state, district or UDISE"></div><div id="trainingCardResults"></div></div>`;
   document.body.appendChild(dialog);
   let records = [];
   function buildRecords() {
@@ -46,11 +69,20 @@
     const rows=records.filter(r=>[r.school,r.state,r.district,r.udise].some(v=>String(v).toLowerCase().includes(query)));
     const t=totals(rows);
     document.getElementById('trainingCardScope').textContent=DOM.fDate.value+' to '+DOM.tDate.value+' · '+getSelectedStateLabel();
-    document.getElementById('trainingCardResults').innerHTML='<div class="detail-visual-kpis">'+[['Schools trained',t.schools],['Teachers trained',t.teachers],['Students trained',t.students]].map(([label,n])=>'<div class="detail-visual-kpi"><span>'+label+'</span><strong>'+fmt(n)+'</strong></div>').join('')+'</div><div class="training-charts">'+chart(rows,'teachers','Teachers trained')+chart(rows,'students','Students trained')+'</div><div class="dashboard-detail-table"><table id="trainingCardTable" class="data-table w-100"><thead><tr>'+['School','State','District','UDISE','Training date','Teachers trained','Students trained'].map(v=>'<th>'+v+'</th>').join('')+'</tr></thead><tbody>'+(rows.map(r=>'<tr>'+[r.school,r.state,r.district,r.udise,r.date,r.teachers,r.students].map(v=>'<td>'+escapeHtml(v)+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="7">No matching training records. Choose a wider date range on the main bar.</td></tr>')+'</tbody></table></div>';
+    document.getElementById('trainingCardResults').innerHTML='<div class="detail-visual-kpis">'+[['Schools trained',t.teachers],['Teachers trained',t.schools],['Students trained',t.students]].map(([label,n])=>'<div class="detail-visual-kpi"><span>'+label+'</span><strong>'+fmt(n)+'</strong></div>').join('')+'</div><div class="training-charts">'+chart(rows,'teachers','Schools trained')+chart(rows,'students','Students trained')+'</div><div class="dashboard-detail-table"><table id="trainingCardTable" class="data-table w-100"><thead><tr>'+['School','State','District','UDISE','Training date','Teachers trained','Students trained'].map(v=>'<th>'+v+'</th>').join('')+'</tr></thead><tbody>'+(rows.map(r=>'<tr>'+[r.school,r.state,r.district,r.udise,r.date,r.teachers,r.students].map(v=>'<td>'+escapeHtml(v)+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="7">No matching training records. Choose a wider date range on the main bar.</td></tr>')+'</tbody></table></div>';
   }
   function update(){
     records=buildRecords();const t=totals(records);
-    metrics.innerHTML='<strong>'+fmt(t.teachers)+' <span style="font-size:13px;font-weight:500;color:var(--muted);vertical-align:baseline;margin-left:4px;">school</span></strong><span>Teachers · students</span><div class="training-card-secondary"><span><b>'+fmt(t.schools)+'</b>Schools</span><span><b>'+fmt(t.students)+'</b>Students</span></div>';
+    const sEl=document.getElementById('trainingCardSchoolCount');
+    const tEl=document.getElementById('trainingCardTeacherCount');
+    const stEl=document.getElementById('trainingCardStudentCount');
+    if(sEl&&tEl&&stEl){
+      sEl.textContent=fmt(t.teachers);
+      tEl.textContent=fmt(t.schools);
+      stEl.textContent=fmt(t.students);
+    }else{
+      metrics.innerHTML='<div class="training-hero-row"><span class="training-hero-num" id="trainingCardSchoolCount">'+fmt(t.teachers)+'</span> <span class="training-hero-label">Schools</span></div><div class="training-capsules"><span class="training-chip"><i class="bi bi-person-video3"></i><b id="trainingCardTeacherCount">'+fmt(t.schools)+'</b> Teachers</span><span class="training-chip"><i class="bi bi-people-fill"></i><b id="trainingCardStudentCount">'+fmt(t.students)+'</b> Students</span></div>';
+    }
     if(dialog.open)renderPopup();
   }
   card.onclick=()=>window.openDashboardDetail('training');
